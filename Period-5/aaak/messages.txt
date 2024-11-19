@@ -1,8 +1,4 @@
 Hey everyone! Just finished the new level, it's insane!
 Did you see the latest update? So many cool features!
-Anyone up for a game tonight? Let's team up!
-Trivia time: What year was the first programming language developed?
-Can't believe we hit our goal already! Great job, team!
-Who's ready for the big launch tomorrow? Can't wait!
 
-Note: This text file is on the backend. Now we need to make the message send feature function
+hello bub

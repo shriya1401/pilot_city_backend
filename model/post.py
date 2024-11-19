@@ -1,6 +1,8 @@
 # post.py
+import logging
 from sqlite3 import IntegrityError
 from sqlalchemy import Text, JSON
+from sqlalchemy.exc import IntegrityError
 from __init__ import app, db
 from model.user import User
 from model.channel import Channel
@@ -57,20 +59,19 @@ class Post(db.Model):
 
     def create(self):
         """
-        The create method adds the object to the database and commits the transaction.
+        Creates a new post in the database.
         
-        Uses:
-            The db ORM methods to add and commit the transaction.
-        
-        Raises:
-            Exception: An error occurred when adding the object to the database.
+        Returns:
+            Post: The created post object, or None on error.
         """
         try:
             db.session.add(self)
             db.session.commit()
-        except Exception as e:
+        except IntegrityError as e:
             db.session.rollback()
-            raise e
+            logging.warning(f"IntegrityError: Could not create post with title '{self._title}' due to {str(e)}.")
+            return None
+        return self
         
     def read(self):
         """
@@ -95,7 +96,7 @@ class Post(db.Model):
         return data
     
 
-    def update(self, inputs):
+    def update(self):
         """
         Updates the post object with new data.
         
@@ -105,14 +106,14 @@ class Post(db.Model):
         Returns:
             Post: The updated post object, or None on error.
         """
-        if not isinstance(inputs, dict):
-            return self
-
-        title = inputs.get("title", "")
-        content = inputs.get("content", "")
-        channel_id = inputs.get("channel_id", None)
-        user_name = inputs.get("user_name", None)
-        channel_name = inputs.get("channel_name", None)
+        
+        inputs = Post.query.get(self.id)
+        
+        title = inputs._title
+        content = inputs._content
+        channel_id = inputs._channel_id
+        user_name = User.query.get(inputs._user_id).name if inputs._user_id else None
+        channel_name = Channel.query.get(inputs._channel_id).name if inputs._channel_id else None
 
         # If channel_name is provided, look up the corresponding channel_id
         if channel_name:
@@ -136,11 +137,12 @@ class Post(db.Model):
             self._channel_id = channel_id
         if user_id:
             self._user_id = user_id
-            
+
         try:
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
+            logging.warning(f"IntegrityError: Could not update post with title '{title}' due to missing channel_id.")
             return None
         return self
     

@@ -179,19 +179,27 @@ def initChannels():
             Channel(name='Memes', group_id=satire.id),
             Channel(name='Irony', group_id=satire.id),
             Channel(name='Cyber Patriots', group_id=activity_hub.id),
-            Channel(name='Robotics', group_id=activity_hub.id)
+            Channel(name='Robotics', group_id=activity_hub.id),
         ]
         
         #P3 Channels Below
          # Share and Care channels below:
         DNHSCafe = Group.query.filter_by(_name='Study Room').first()
+        chess_forum = Group.query.filter_by(_name='Chess Forum').first()
+        Underground_Music = Group.query.filter_by(_name='Underground Music').first()
         share_and_care_channels = [
-            Channel(name='Math 📓📈', group_id=limitless_connection.id),
-            Channel(name='Chemistry 👩🏻‍🔬🧪', group_id=limitless_connection.id),
-            Channel(name='Biology 🧬🔬', group_id=limitless_connection.id),
-            Channel(name='English 🍎📝', group_id=limitless_connection.id),
-            Channel(name='Coding 💻👾', group_id=limitless_connection.id),
-            Channel(name='History 📚🏛️', group_id=limitless_connection.id),   
+            Channel(name='Math', group_id=DNHSCafe.id),
+            Channel(name='Chemistry', group_id=DNHSCafe.id),
+            Channel(name='Biology', group_id=DNHSCafe.id),
+            Channel(name='English', group_id=DNHSCafe.id),
+            Channel(name='Coding', group_id=DNHSCafe.id),
+            Channel(name='History', group_id=DNHSCafe.id),
+            Channel(name='General', group_id=chess_forum.id),
+            Channel(name='Chess Tips', group_id=chess_forum.id),
+            Channel(name='Game Updates', group_id=chess_forum.id),
+            Channel(name='Artists', group_id=Underground_Music.id),
+            Channel(name='Songs', group_id=Underground_Music.id),
+            Channel(name='Genres', group_id=Underground_Music.id),
         ]
 
         # P2 channels below:
@@ -209,6 +217,10 @@ def initChannels():
             Channel(name='Pineapple on Pizza', group_id=internet_debates.id),
             Channel(name='Cats vs Dogs', group_id=internet_debates.id),
             Channel(name='Coffee or Tea', group_id=internet_debates.id),
+            Channel(name='Economy Cars', group_id=car_debates.id),
+            Channel(name='Luxury Cars', group_id=car_debates.id),
+            Channel(name='Vintage Cars', group_id=car_debates.id),
+            Channel(name='Student Cars', group_id=car_debates.id),
             Channel(name='Adventure Play House', group_id=calico_vote.id),
             Channel(name='Sylvanian Family Restraunt House', group_id=calico_vote.id),
             Channel(name='Magical Mermaid Castle House', group_id=calico_vote.id),
@@ -218,6 +230,11 @@ def initChannels():
             Channel(name='Food and Drink', group_id=dnero_store.id),
             Channel(name='Spirit', group_id=dnero_store.id),
             Channel(name='Limited Edition', group_id=dnero_store.id),
+            Channel(name='Quarterbacks', group_id=nfl_goats.id),
+            Channel(name='Running Backs', group_id=nfl_goats.id),
+            Channel(name='Wide Receivers', group_id=nfl_goats.id),
+            Channel(name='Defensive Players', group_id=nfl_goats.id),
+            Channel(name='NFL Divisions', group_id=nfl_goats.id),
             Channel(name='Gift Cards', group_id=dnero_store.id),
         ]
         
