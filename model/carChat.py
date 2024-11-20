@@ -5,9 +5,9 @@ from model.user import User
 class CarChat(db.Model):
     __tablename__ = 'carChats'
 
-    id = db.Column(db.Integer, primary_key=True)
-    _message = db.Column(db.String(255), unique=True, nullable=False)
-    _user_id = db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    _message = db.Column(db.String(255), nullable=False)
+    _user_id = db.Column('user_id', db.Integer, db.ForeignKey('users.id'))
     
     def __init__(self, message, user_id):
         """
@@ -19,8 +19,8 @@ class CarChat(db.Model):
             moderators (list, optional): A list of users who are the moderators of the group. Defaults to None.
         """
         self._message = message
-        self._user_id = user_id
-        self.id = len(CarChat.query.all()) + 1
+        self._user_id = user_id 
+
         
     @property
     def message(self):
