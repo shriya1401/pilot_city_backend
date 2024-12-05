@@ -249,8 +249,17 @@ def initChannels():
             Channel(name='Combos', group_id=flavor_fusion.id),
         ]
         
+        # Holiday (OUR PROJECT)
+        holiday = Group.query.filter_by(_name='Holiday').first()
+        holiday_channels = [
+            Channel(name='Teenage Girls', group_id=holiday.id),
+            Channel(name='Teenage Boys', group_id=holiday.id),
+            Channel(name='Toddlers', group_id=holiday.id),
+            Channel(name='Adults', group_id=holiday.id)
+        ]
+
         
-        channels = home_page_channels + shared_interest_channels + vote_for_the_goat_channels + rate_and_relate_channels
+        channels = home_page_channels + shared_interest_channels + vote_for_the_goat_channels + rate_and_relate_channels + holiday_channels
         for channel in channels:
             try:
                 db.session.add(channel)
