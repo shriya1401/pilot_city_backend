@@ -1,4 +1,4 @@
-
+import talk
 import random as r
 
 class tag:
@@ -29,3 +29,6 @@ def searchToTag(string):
     lst = string.split("split")
     for tag in lst:
         tag.newTag(tag)
+
+ftalk = talk.backend.fetch()
+print(ftalk)
