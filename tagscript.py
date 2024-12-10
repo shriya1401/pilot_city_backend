@@ -30,5 +30,5 @@ def searchToTag(string):
     for tag in lst:
         tag.newTag(tag)
 
-ftalk = talk.backend.fetch()
+ftalk = talk.Data()
 print(ftalk)
