@@ -11,12 +11,20 @@ import google.generativeai as genai
 genai.configure(api_key=os.environ.get('GOOGLE_GENERATIVEAI_API_KEY'))
 
 
+from api.giftinator import chat_endpoint
+
+# Initialize Flask app
+app = Flask(__name__)
+
+# Register chat endpoint
+chat_endpoint(app)
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 # Load environment variables from .env file
 load_dotenv()
 
-# Setup of key Flask object (app)
-app = Flask(__name__)
 
 # Initialize Flask-Login object
 login_manager = LoginManager()
@@ -85,45 +93,3 @@ app.config['KASM_SERVER'] = os.environ.get('KASM_SERVER') or 'https://kasm.night
 app.config['KASM_API_KEY'] = os.environ.get('KASM_API_KEY') or None
 app.config['KASM_API_KEY_SECRET'] = os.environ.get('KASM_API_KEY_SECRET') or None
 
-# Configure AI model
-genai.configure(api_key=os.environ.get('GOOGLE_GENERATIVEAI_API_KEY'))
-
-generation_config = {
-    "temperature": 1.15,
-    "top_p": 0.95,
-    "top_k": 40,
-    "max_output_tokens": 8192,
-    "response_mime_type": "text/plain",
-}
-model = genai.GenerativeModel(
-    model_name="gemini-1.5-pro",
-    generation_config=generation_config,
-    system_instruction="You are an assistant capable of answering questions and having conversations."
-)
-
-# Chat history
-chat_history = []
-
-# AI chat endpoint
-@app.route('/chat', methods=['POST'])
-def chat():
-    user_input = request.json.get('user_input', '')
-    if not user_input:
-        return jsonify({"error": "No input provided"}), 400
-
-    try:
-        # Start chat session
-        chat_session = model.start_chat(history=chat_history)
-        response = chat_session.send_message(user_input)
-
-        # Update chat history
-        assistant_response = response.text
-        chat_history.append({"role": "user", "parts": [user_input]})
-        chat_history.append({"role": "assistant", "parts": [assistant_response]})
-
-        return jsonify({"response": assistant_response})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(debug=True)
