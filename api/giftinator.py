@@ -1,5 +1,6 @@
 import os
-from flask import Flask, request, jsonify
+import requests
+from flask import request, jsonify
 import google.generativeai as genai
 
 # Configure AI model
@@ -18,8 +19,28 @@ model = genai.GenerativeModel(
     system_instruction="You are an assistant capable of answering questions and having conversations."
 )
 
-# Chat history
-chat_history = []
+# Backend endpoints
+BACKEND_URL = "http://localhost:5000"  # Replace with actual backend URL
+
+def fetch_chat_history():
+    """Fetch chat history from the user's backend."""
+    try:
+        response = requests.get(f"{BACKEND_URL}/get_chat")
+        response.raise_for_status()
+        return response.json().get("history", [])
+    except Exception as e:
+        print(f"Error fetching chat history: {e}")
+        return []
+
+def save_chat_history(history_entry):
+    """Save a single chat entry to the user's backend."""
+    try:
+        response = requests.post(f"{BACKEND_URL}/save_chat", json=history_entry)
+        response.raise_for_status()
+        return True
+    except Exception as e:
+        print(f"Error saving chat history: {e}")
+        return False
 
 # Define the chat endpoint
 def chat_endpoint(app):
@@ -30,14 +51,21 @@ def chat_endpoint(app):
             return jsonify({"error": "No input provided"}), 400
 
         try:
+            # Fetch existing chat history from backend
+            chat_history = fetch_chat_history()
+
             # Start chat session
             chat_session = model.start_chat(history=chat_history)
             response = chat_session.send_message(user_input)
 
             # Update chat history
             assistant_response = response.text
-            chat_history.append({"role": "user", "parts": [user_input]})
-            chat_history.append({"role": "assistant", "parts": [assistant_response]})
+            user_entry = {"role": "user", "parts": [user_input]}
+            assistant_entry = {"role": "assistant", "parts": [assistant_response]}
+
+            # Save to backend
+            save_chat_history(user_entry)
+            save_chat_history(assistant_entry)
 
             return jsonify({"response": assistant_response})
         except Exception as e:
