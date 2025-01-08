@@ -7,6 +7,7 @@ from api.jwt_authorize import token_required
 from model.post import Post
 from model.channel import Channel
 
+
 """
 This Blueprint object is used to define APIs for the Post model.
 - Blueprint is used to modularize application files.
@@ -54,7 +55,7 @@ class PostAPI:
             if 'content' not in data:
                 data['content'] = {}
             
-            stars = data.get('stars', 0)
+            stars = data.get('stars', 4)
 
             # Create a new post object using the data from the request
             post = Post(
