@@ -29,23 +29,17 @@ class Post(db.Model):
     _content = db.Column(JSON, nullable=False)
     _user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     _channel_id = db.Column(db.Integer, db.ForeignKey('channels.id'), nullable=False)
+    _stars = db.Column(db.Integer, nullable=True, default=0)  # New column for star ratings
 
-    def __init__(self, title, comment, user_id=None, channel_id=None, content={}, user_name=None, channel_name=None):
-        """
-        Constructor, 1st step in object creation.
-        
-        Args:
-            title (str): The title of the post.
-            comment (str): The comment of the post.
-            user_id (int): The user who created the post.
-            channel_id (int): The channel to which the post belongs.
-            content (dict): The content of the post.
-        """
+    def __init__(self, title, comment, user_id=None, channel_id=None, content={}, stars=0, user_name=None, channel_name=None):
         self._title = title
         self._comment = comment
         self._user_id = user_id
         self._channel_id = channel_id
         self._content = content
+        self._stars = stars  # Use the parameter value or default to 0
+
+
 
     def __repr__(self):
         """
@@ -90,6 +84,7 @@ class Post(db.Model):
             "title": self._title,
             "comment": self._comment,
             "content": self._content,
+            "stars": self._stars,  # Include stars in the response
             "user_name": user.name if user else None,
             "channel_name": channel.name if channel else None
         }
@@ -194,10 +189,11 @@ def initPosts():
         db.create_all()
         """Tester data for table"""
         posts = [
-            Post(title='Added Group and Channel Select', comment='The Home Page has a Section, on this page we can select Group and Channel to allow blog filtering', content={'type': 'announcement'}, user_id=1, channel_id=1),
-            Post(title='JSON content saving through content"field in database', comment='You could add other dialogs to a post that would allow custom data or even storing reference to uploaded images.', content={'type': 'announcement'}, user_id=1, channel_id=1),
-            Post(title='Allows Post by different Users', comment='Different users seeing content is a key concept in social media.', content={'type': 'announcement'}, user_id=2, channel_id=1),
+            Post(title='Added Group and Channel Select', comment='The Home Page has a Section, on this page we can select Group and Channel to allow blog filtering', content={'type': 'announcement'}, user_id=1, channel_id=1, stars=5),
+            Post(title='JSON content saving through content"field in database', comment='You could add other dialogs to a post that would allow custom data or even storing reference to uploaded images.', content={'type': 'announcement'}, user_id=1, channel_id=1, stars=4),
+            Post(title='Allows Post by different Users', comment='Different users seeing content is a key concept in social media.', content={'type': 'announcement'}, user_id=2, channel_id=1, stars=3),
         ]
+
         
         for post in posts:
             try:

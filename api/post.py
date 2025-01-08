@@ -53,9 +53,19 @@ class PostAPI:
                 return {'message': 'Channel ID is required'}, 400
             if 'content' not in data:
                 data['content'] = {}
+            
+            stars = data.get('stars', 0)
 
             # Create a new post object using the data from the request
-            post = Post(data['title'], data['comment'], current_user.id, data['channel_id'], data['content'])
+            post = Post(
+                data['title'],
+                data['comment'],
+                current_user.id,
+                data['channel_id'],
+                data['content'],
+                stars=stars  # Adding stars to the post
+            )
+
             # Save the post object using the Object Relational Mapper (ORM) method defined in the model
             post.create()
             # Return response to the client in JSON format, converting Python dictionaries to JSON format
@@ -98,6 +108,10 @@ class PostAPI:
             post._title = data['title']
             post._content = data['content']
             post._channel_id = data['channel_id']
+            # Update the stars if present in request
+            if 'stars' in data:
+                post._stars = data['stars']
+
             # Save the post
             post.update()
             # Return response
