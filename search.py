@@ -26,7 +26,6 @@ items = [
     {"name": "Perfume Gift Set", "link": "holiday/scented", "tags": ["all", "perfume", "gift", "set", "scented"]}
 ]
 
-# A route to handle search queries
 @app.route('/search', methods=['GET'])
 def search_items():
     query = request.args.get('q', '').lower()
@@ -39,6 +38,10 @@ def search_items():
 @app.route('/api/id', methods=['GET'])
 def get_item_id():
     return jsonify({"message": "Backend Connected!"})
+
+@app.route('/test', methods=['GET'])
+def test_route():
+    return jsonify({"message": "Backend is working!"})
 
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=8887)
