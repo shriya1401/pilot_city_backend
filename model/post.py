@@ -39,8 +39,6 @@ class Post(db.Model):
         self._content = content
         self._stars = stars  # Use the parameter value or default to 0
 
-
-
     def __repr__(self):
         """
         The __repr__ method is a special method used to represent the object in a string format.
@@ -84,7 +82,7 @@ class Post(db.Model):
             "title": self._title,
             "comment": self._comment,
             "content": self._content,
-            "stars": self._stars,  # Include stars in the response
+            "stars": self._stars, 
             "user_name": user.name if user else None,
             "channel_name": channel.name if channel else None
         }
@@ -189,9 +187,9 @@ def initPosts():
         db.create_all()
         """Tester data for table"""
         posts = [
-            Post(title='Added Group and Channel Select', comment='The Home Page has a Section, on this page we can select Group and Channel to allow blog filtering', content={'type': 'announcement'}, user_id=1, channel_id=1, stars=5),
-            Post(title='JSON content saving through content"field in database', comment='You could add other dialogs to a post that would allow custom data or even storing reference to uploaded images.', content={'type': 'announcement'}, user_id=1, channel_id=1, stars=4),
-            Post(title='Allows Post by different Users', comment='Different users seeing content is a key concept in social media.', content={'type': 'announcement'}, user_id=2, channel_id=1, stars=3),
+            Post(title='Starbucks Giftcard', comment='A starbucks giftcard is a good gift for people who enjoy coffee', content={'type': 'announcement'}, user_id=1, channel_id=1, stars=5),
+            Post(title='Sephora Giftcard', comment='Pretty impersonal but its a decent gift', content={'type': 'announcement'}, user_id=1, channel_id=1, stars=3),
+            Post(title='Holiday Mug', comment='Really bad gift, try to pick a better one. ', content={'type': 'announcement'}, user_id=2, channel_id=1, stars=2),
         ]
 
         
