@@ -59,7 +59,8 @@ class PostAPI:
             post._stars = stars
             db.session.commit()  # Commit the changes to the database
 
-            return {'message': 'Post rating updated successfully'}, 201
+            return {'message': f'Post Rating of {stars} stars updated successfully'}, 201
+
 
         @token_required()
         def get(self):
