@@ -11,13 +11,13 @@ import google.generativeai as genai
 genai.configure(api_key=os.environ.get('GOOGLE_GENERATIVEAI_API_KEY'))
 
 
-from api.giftinator import chat_endpoint
+# from api.giftinator import chat_endpoint
 
 # Initialize Flask app
 app = Flask(__name__)
 
 # Register chat endpoint
-chat_endpoint(app)
+#chat_endpoint(app)
 
 if __name__ == '__main__':
     app.run(debug=True)
