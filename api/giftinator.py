@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Blueprint
 from flask_restful import Api, Resource
 import google.generativeai as genai
 
@@ -32,9 +32,12 @@ model = genai.GenerativeModel(
     ),
 )
 
-# Flask app and API initialization
+# Flask app initialization
 app = Flask(__name__)
-api = Api(app)
+
+# Blueprint for Post API
+gift_api = Blueprint('gift_api', __name__, url_prefix='/api/gift')
+api = Api(gift_api)
 
 # Backend URL placeholder
 BACKEND_URL = "http://localhost:5000"  # Replace with actual backend URL
@@ -86,8 +89,12 @@ class ChatResource(Resource):
             return {"error": str(e)}, 500
 
 
-# Add ChatResource to the API
+# Add ChatResource to the Blueprint's API
 api.add_resource(ChatResource, '/chat')
+
+# Register the Blueprint with the Flask app
+app.register_blueprint(gift_api)
+
 
 # Run the app
 if __name__ == '__main__':
