@@ -19,9 +19,9 @@ var items = grabRec();
 const markdownData = `
 # Recommended Items
 
-- **[Item 1](https://example.com/product1)**: 
-- **[Item 2](https://example.com/service2)**: 
-- **[Item 3](https://example.com/resource3)**: 
+- **[${items[1].name}](${items[1].link})**: 
+- **[${items[2].name}](${items[2].link})**: 
+- **[${items[3].name}](${items[3].link})**: 
 
 _Updated as of January 2025._
 `;
