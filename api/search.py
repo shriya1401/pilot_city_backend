@@ -1,8 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Blueprint
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
+
+# Define the Blueprint
+search_api = Blueprint('search_api', __name__)
 
 # Sample items
 items = [
@@ -26,7 +29,8 @@ items = [
     {"name": "Perfume Gift Set", "link": "holiday/scented", "tags": ["all", "perfume", "gift", "set", "scented"]}
 ]
 
-@app.route('/search', methods=['GET'])
+# Define the /search route
+@search_api.route('/search', methods=['GET'])
 def search_items():
     query = request.args.get('q', '').lower()
     if not query:
@@ -37,7 +41,7 @@ def search_items():
 # A mock route to handle get credentials request
 @app.route('/api/id', methods=['GET'])
 def get_item_id():
-    return jsonify({"message": "Backend Connected!"})
+    return jsonify({"message": "API running!"})
 
 @app.route('/test', methods=['GET'])
 def test_route():
