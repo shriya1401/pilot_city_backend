@@ -30,12 +30,12 @@ app.get('/tri2/socialmedia_frontend/navigation/recommended.md', (req, res) => {
   res.send(markdownData);
 });
 
-app.get('/', (req, res) => {
+app.get('/templates/index.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/script.js', (req, res) => {
-  res.sendFile(path.join(__dirname, 'script.js'));
+app.get('/api/search.py', (req, res) => {
+  res.sendFile(path.join(__dirname, 'search.py'));
 });
 
 const PORT = 4887;
