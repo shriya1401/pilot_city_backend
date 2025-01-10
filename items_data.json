@@ -13,10 +13,10 @@
         "name": "Lego Set",
         "link": "holiday/toys",
         "tags": {
-            "all": 0,
-            "lego": 0,
-            "set": 0,
-            "toys": 0
+            "all": 1,
+            "lego": 1,
+            "set": 1,
+            "toys": 1
         }
     },
     {
@@ -104,10 +104,10 @@
         "name": "Woolen Scarf",
         "link": "holiday/clothes",
         "tags": {
-            "all": 0,
-            "woolen": 0,
-            "scarf": 0,
-            "clothes": 0
+            "all": 1,
+            "woolen": 1,
+            "scarf": 1,
+            "clothes": 1
         }
     },
     {
@@ -156,9 +156,9 @@
         "name": "Scented Candle",
         "link": "holiday/scented",
         "tags": {
-            "all": 1,
-            "candle": 1,
-            "scented": 1
+            "all": 3,
+            "candle": 3,
+            "scented": 3
         }
     },
     {
