@@ -145,20 +145,20 @@
         "name": "Gourmet Cheese Set",
         "link": "holiday/food",
         "tags": {
-            "all": 1,
-            "gourmet": 1,
-            "cheese": 1,
-            "set": 1,
-            "food": 1
+            "all": 2,
+            "gourmet": 2,
+            "cheese": 2,
+            "set": 2,
+            "food": 2
         }
     },
     {
         "name": "Scented Candle",
         "link": "holiday/scented",
         "tags": {
-            "all": 3,
-            "candle": 3,
-            "scented": 3
+            "all": 4,
+            "candle": 4,
+            "scented": 4
         }
     },
     {
