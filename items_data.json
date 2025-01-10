@@ -145,11 +145,11 @@
         "name": "Gourmet Cheese Set",
         "link": "holiday/food",
         "tags": {
-            "all": 0,
-            "gourmet": 0,
-            "cheese": 0,
-            "set": 0,
-            "food": 0
+            "all": 1,
+            "gourmet": 1,
+            "cheese": 1,
+            "set": 1,
+            "food": 1
         }
     },
     {

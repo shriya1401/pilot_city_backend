@@ -60,7 +60,7 @@ app.register_blueprint(nestImg_api)
 app.register_blueprint(vote_api)
 app.register_blueprint(car_api)
 app.register_blueprint(star_api)
-app.register_blueprint(gift_api)
+# app.register_blueprint(gift_api)
 app.register_blueprint(search_api)
 app.register_blueprint(talk_api)
 

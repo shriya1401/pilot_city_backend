@@ -54,8 +54,11 @@ def search_items():
     query = request.args.get('q', '').lower()
     if not query:
         return jsonify([])
-    results = [item for item in items if query in item["name"].lower()]
+    results = [
+        item for item in items if query in item["name"].lower() or any(query in tag for tag in item["tags"])
+    ]
     return jsonify(results)
+
 
 @search_api.route('/increment_tag', methods=['POST', 'OPTIONS'])
 def increment_tag():
