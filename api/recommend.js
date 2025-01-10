@@ -23,7 +23,6 @@ const markdownData = `
 - **[${items[2].name}](${items[2].link})**: 
 - **[${items[3].name}](${items[3].link})**: 
 
-_Updated as of January 2025._
 `;
 
 app.get('/tri2/socialmedia_frontend/navigation/recommended.md', (req, res) => {
