@@ -1,26 +1,26 @@
 from flask import Flask, send_file, Blueprint
 import os
+from operator import itemgetter
+
+from api.search import items
 
 app = Flask(__name__)
-recommend_api = Blueprint('recommend_api', __name__)
 
 # Insert where items are collected
 def grab_rec(value):
-    lst = value.sort(key=lambda x: x['tags'])
+    lst = sorted(value, key=lambda x: itemgetter('all')(x['tags']))
     result = []
     for i in range(len(lst)):
         result.append(lst[i])
     return result
 
 # Sample items data (replace with actual data)
-items = grab_rec([
-    # 
-])
+ritems = grab_rec(items)
 
 markdown_data = f"""
 # Recommended Items
 
-- **[{items[1]['name']}]({items[1]['link']})**:
+- **[{ritems[1]['name']}]({ritems[1]['link']})**:
 """
 
 print(markdown_data)
@@ -36,6 +36,8 @@ def index_html():
 @app.route('/api/search.py')
 def search_py():
     return send_file(os.path.join(os.path.dirname(__file__), 'search.py'))
+
+recommend_api = Blueprint('recommend_api', __name__)
 
 if __name__ == '__main__':
     PORT = 4887
