@@ -23,7 +23,7 @@ markdown_data = f"""
 - **[{ritems[1]['name']}]({ritems[1]['link']})**:
 """
 
-print(markdown_data)
+# print(markdown_data)
 
 @app.route('/tri2/socialmedia_frontend/navigation/recommended.md')
 def recommended_md():
