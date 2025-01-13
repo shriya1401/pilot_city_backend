@@ -1,8 +1,7 @@
 from flask import Flask, send_file, Blueprint
 import os
 from operator import itemgetter
-
-from api.search import items
+from .search import items
 
 app = Flask(__name__)
 
