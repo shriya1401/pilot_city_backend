@@ -17,11 +17,7 @@ genai.configure(api_key=os.environ.get('GOOGLE_GENERATIVEAI_API_KEY'))
 app = Flask(__name__)
 
 # Register chat endpoint
-<<<<<<< HEAD
 #chat_endpoint(app)
-=======
-# chat_endpoint(app)
->>>>>>> 681ab85 (change)
 
 if __name__ == '__main__':
     app.run(debug=True)
