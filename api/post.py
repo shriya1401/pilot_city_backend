@@ -55,7 +55,7 @@ class PostAPI:
             if 'content' not in data:
                 data['content'] = {}
             
-            stars = data.get('stars', 4)
+            stars = data.get('stars')
 
             # Create a new post object using the data from the request
             post = Post(

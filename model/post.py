@@ -31,7 +31,7 @@ class Post(db.Model):
     _channel_id = db.Column(db.Integer, db.ForeignKey('channels.id'), nullable=False)
     _stars = db.Column(db.Integer, nullable=True, default=0)  # New column for star ratings
 
-    def __init__(self, title, comment, user_id=None, channel_id=None, content={}, stars=4, user_name=None, channel_name=None):
+    def __init__(self, title, comment, user_id=None, channel_id=None, content={}, stars=0, user_name=None, channel_name=None):
         self._title = title
         self._comment = comment
         self._user_id = user_id

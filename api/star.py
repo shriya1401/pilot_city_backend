@@ -40,44 +40,42 @@ class PostAPI:
     class _RANKING(Resource):
         @token_required()
         def post(self):
-            """Submit a star rating for a post."""
+            """Submit a star rating for the most recent post by the user."""
             current_user = g.current_user
             data = request.get_json()
 
-            if not data or 'stars' not in data or 'post_id' not in data:
-                return {'message': 'Missing required fields (stars, post_id)'}, 400
+            if not data or 'stars' not in data:
+                return {'message': 'Missing required field: stars'}, 400
 
             stars = data['stars']
             if not isinstance(stars, int) or stars < 1 or stars > 5:
                 return {'message': 'Invalid star ranking. Must be an integer between 1 and 5.'}, 400
 
-            post = Post.query.get(data['post_id'])
+            # Find the most recent post by the current user
+            post = Post.query.filter_by(_user_id=current_user.id).order_by(Post.id.desc()).first()
             if not post:
-                return {'message': 'Post not found'}, 404
+                return {'message': 'No posts found for the user'}, 404
 
-            # Update the star rating of the post
+            # Update the star rating of the most recent post
             post._stars = stars
             db.session.commit()  # Commit the changes to the database
 
-            return {'message': f'Post Rating of {stars} stars updated successfully'}, 201
-
+            return {'message': f'Rating of {stars} stars updated for the latest post successfully'}, 201
 
         @token_required()
         def get(self):
-            """Retrieve the star rating of a post."""
-            data = request.get_json()
+            """Retrieve the star rating of the most recent post by the user."""
+            current_user = g.current_user
 
-            if not data or 'post_id' not in data:
-                return {'message': 'Post ID is required'}, 400
-
-            post = Post.query.get(data['post_id'])
+            # Find the most recent post by the current user
+            post = Post.query.filter_by(_user_id=current_user.id).order_by(Post.id.desc()).first()
             if not post:
-                return {'message': 'Post not found'}, 404
+                return {'message': 'No posts found for the user'}, 404
 
             return jsonify({
                 "stars": post._stars
             })
-    
+
     # Map resources to endpoints
     api.add_resource(_CRUD, '/post')
     api.add_resource(_RANKING, '/ranking')
