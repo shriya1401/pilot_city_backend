@@ -39,6 +39,7 @@ from model.nestPost import NestPost, initNestPosts # Justin added this, custom f
 from model.vote import Vote, initVotes
 from model.events import Event, initEvents  # server only Views
 from model.nora import Nora
+from model.giftinator import Giftinator, initGiftinator
 
 
 # register URIs for api endpoints
@@ -163,6 +164,7 @@ def generate_data():
     initNestPosts()
     initVotes()
     initEvents()  
+    initGiftinator()
     Nora.initNoras()
 # Backup the old database
 def backup_database(db_uri, backup_uri):
