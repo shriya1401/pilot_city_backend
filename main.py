@@ -44,7 +44,7 @@ from model.channel import Channel, initChannels
 from model.post import Post, initPosts
 from model.nestPost import NestPost, initNestPosts # Justin added this, custom format for his website
 from model.vote import Vote, initVotes
-# server only Views
+from model.events import Event, initEvents  # server only Views
 
 # register URIs for api endpoints
 app.register_blueprint(messages_api) # Adi added this, messages for his website
@@ -172,6 +172,7 @@ def generate_data():
     initPosts()
     initNestPosts()
     initVotes()
+    initEvents()  
     
 # Backup the old database
 def backup_database(db_uri, backup_uri):
