@@ -26,13 +26,6 @@ from api.nestPost import nestPost_api # Justin added this, custom format for his
 from api.messages_api import messages_api # Adi added this, messages for his website
 from api.carphoto import car_api
 from api.carChat import car_chat_api
-from api.star import star_api
-# from api.giftinator import gift_api  # Adjust according to the actual file structure
-from api.search import search_api
-from api.talk import talk_api
-from api.recommend import recommend_api
-
-
 
 from api.vote import vote_api
 # database Initialization functions
@@ -60,11 +53,6 @@ app.register_blueprint(nestPost_api)
 app.register_blueprint(nestImg_api)
 app.register_blueprint(vote_api)
 app.register_blueprint(car_api)
-app.register_blueprint(star_api)
-# app.register_blueprint(gift_api)
-app.register_blueprint(search_api)
-app.register_blueprint(talk_api)
-app.register_blueprint(recommend_api)
 
 # Tell Flask-Login the view function name of your login route
 login_manager.login_view = "login"
