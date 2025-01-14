@@ -6,6 +6,8 @@ from flask import jsonify
 from sqlalchemy.exc import IntegrityError
 from __init__ import app, db  # Assuming __init__.py initializes app and db
 from datetime import datetime
+from flask import request
+
 
 # Event Model
 class Event(db.Model):
