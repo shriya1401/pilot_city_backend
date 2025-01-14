@@ -37,9 +37,10 @@ from model.channel import Channel, initChannels
 from model.post import Post, initPosts
 from model.nestPost import NestPost, initNestPosts # Justin added this, custom format for his website
 from model.vote import Vote, initVotes
-from model.events import Event, initEvents  # server only Views
-from model.nora import Nora
-from model.giftinator import Giftinator, initGiftinator
+
+from model.events import Event, initEvents  # Vibha
+from model.nora import Nora # Nora
+from model.giftinator import Giftinator, initGiftinator # Soni
 
 
 # register URIs for api endpoints
