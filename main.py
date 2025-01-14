@@ -38,6 +38,8 @@ from model.post import Post, initPosts
 from model.nestPost import NestPost, initNestPosts # Justin added this, custom format for his website
 from model.vote import Vote, initVotes
 from model.events import Event, initEvents  # server only Views
+from model.nora import Nora
+
 
 # register URIs for api endpoints
 app.register_blueprint(messages_api) # Adi added this, messages for his website
@@ -161,7 +163,7 @@ def generate_data():
     initNestPosts()
     initVotes()
     initEvents()  
-    
+    Nora.initNoras()
 # Backup the old database
 def backup_database(db_uri, backup_uri):
     """Backup the current database."""
