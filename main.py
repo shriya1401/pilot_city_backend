@@ -26,11 +26,12 @@ from api.nestPost import nestPost_api # Justin added this, custom format for his
 from api.messages_api import messages_api # Adi added this, messages for his website
 from api.carphoto import car_api
 from api.carChat import car_chat_api
-
 from api.vote import vote_api
-from api.events import event_api  # Import the event API
-from api.notifications import notifications_api  # Import the notifications API
-from api.userPreferences import user_preference_api
+
+
+from api.events import event_api  # Vibha
+from api.notifications import notifications_api  # Kushi
+from api.userPreferences import user_preference_api # Spencer
 
 # database Initialization functions
 from model.carChat import CarChat
@@ -41,11 +42,13 @@ from model.channel import Channel, initChannels
 from model.post import Post, initPosts
 from model.nestPost import NestPost, initNestPosts # Justin added this, custom format for his website
 from model.vote import Vote, initVotes
-from model.notifications import Notification
+
+
 from model.events import Event, initEvents  # Vibha
-from model.nora import Nora # Nora
+from model.notifications import Notification # Kushi
 from model.giftinator import Giftinator, initGiftinator # Soni
-from model.userPreferences import UserPreference, initUserPreferences  # Import UserPreference model and its initialization function
+from model.nora import Nora # Nora
+from model.userPreferences import UserPreference, initUserPreferences  # Spencer
 
 
 # register URIs for api endpoints
@@ -172,9 +175,9 @@ def generate_data():
     initPosts()
     initNestPosts()
     initVotes()
-    initEvents() 
-    Notification.init_notifications() 
-    initUserPreferences()
+    initEvents()  # Vibha
+    Notification.init_notifications()  # Kushi
+    initUserPreferences() # Spencer
 # Backup the old database
 def backup_database(db_uri, backup_uri):
     """Backup the current database."""
