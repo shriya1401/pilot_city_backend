@@ -44,7 +44,7 @@ from model.notifications import Notification
 from model.events import Event, initEvents  # Vibha
 from model.nora import Nora # Nora
 from model.giftinator import Giftinator, initGiftinator # Soni
-from model.spencer import spencer # spencer
+from model.userPreferences import UserPreference  # Import the initialization function
 
 
 # register URIs for api endpoints
@@ -172,6 +172,8 @@ def generate_data():
     initVotes()
     initEvents() 
     Notification.init_notifications() 
+    UserPreference.__init__()  # Initialize user preferences
+
     
 # Backup the old database
 def backup_database(db_uri, backup_uri):
