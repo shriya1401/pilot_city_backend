@@ -30,6 +30,7 @@ from api.carChat import car_chat_api
 from api.vote import vote_api
 from api.events import event_api  # Import the event API
 from api.notifications import notifications_api  # Import the notifications API
+from api.userPreferences import user_preference_api
 
 # database Initialization functions
 from model.carChat import CarChat
@@ -63,6 +64,7 @@ app.register_blueprint(vote_api)
 app.register_blueprint(car_api)
 app.register_blueprint(event_api)
 app.register_blueprint(notifications_api)  # Register the notifications API
+app.register_blueprint(user_preference_api)
 
 # Tell Flask-Login the view function name of your login route
 login_manager.login_view = "login"
