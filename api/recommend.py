@@ -22,7 +22,7 @@ markdown_data = f"""
 - **[{ritems[1]['name']}]({ritems[1]['link']})**:
 """
 
-# print(markdown_data)
+print(markdown_data)
 
 @app.route('/tri2/socialmedia_frontend/navigation/recommended.md')
 def recommended_md():
@@ -39,6 +39,6 @@ def search_py():
 recommend_api = Blueprint('recommend_api', __name__)
 
 if __name__ == '__main__':
-    PORT = 4887
+    PORT = 8887
     app.run(host='0.0.0.0', port=PORT)
     print(f"Server is running at http://localhost:{PORT}")
