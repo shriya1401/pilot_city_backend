@@ -26,6 +26,7 @@ from api.nestPost import nestPost_api # Justin added this, custom format for his
 from api.messages_api import messages_api # Adi added this, messages for his website
 from api.carphoto import car_api
 from api.carChat import car_chat_api
+
 from api.vote import vote_api
 from api.events import event_api  # Import the event API
 
@@ -38,11 +39,7 @@ from model.channel import Channel, initChannels
 from model.post import Post, initPosts
 from model.nestPost import NestPost, initNestPosts # Justin added this, custom format for his website
 from model.vote import Vote, initVotes
-
-from model.events import Event, initEvents  # Vibha
-from model.nora import Nora # Nora
-from model.giftinator import Giftinator, initGiftinator # Soni
-
+from model.events import Event, initEvents  # server only Views
 
 # register URIs for api endpoints
 app.register_blueprint(messages_api) # Adi added this, messages for his website
@@ -168,8 +165,7 @@ def generate_data():
     initNestPosts()
     initVotes()
     initEvents()  
-    initGiftinator()
-    Nora.initNoras()
+    
 # Backup the old database
 def backup_database(db_uri, backup_uri):
     """Backup the current database."""
