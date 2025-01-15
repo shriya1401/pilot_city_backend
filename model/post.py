@@ -89,55 +89,37 @@ class Post(db.Model):
         return data
     
 
-    def update(self):
+    def update(self, data):
         """
         Updates the post object with new data.
         
         Args:
-            inputs (dict): A dictionary containing the new data for the post.
+            data (dict): A dictionary containing the new data for the post.
         
         Returns:
             Post: The updated post object, or None on error.
         """
+        if 'title' in data:
+            self._title = data['title']
+        if 'comment' in data:
+            self._comment = data['comment']
+        if 'content' in data:
+            self._content = data['content']
+        if 'stars' in data:
+            self._stars = data['stars']
+        if 'user_id' in data:
+            self._user_id = data['user_id']
+        if 'channel_id' in data:
+            self._channel_id = data['channel_id']
         
-        inputs = Post.query.get(self.id)
-        
-        title = inputs._title
-        content = inputs._content
-        channel_id = inputs._channel_id
-        user_name = User.query.get(inputs._user_id).name if inputs._user_id else None
-        channel_name = Channel.query.get(inputs._channel_id).name if inputs._channel_id else None
-
-        # If channel_name is provided, look up the corresponding channel_id
-        if channel_name:
-            channel = Channel.query.filter_by(_name=channel_name).first()
-            if channel:
-                channel_id = channel.id
-                
-        if user_name:
-            user = User.query.filter_by(_name=user_name).first()
-            if user:
-                user_id = user.id
-            else:
-                return None
-
-        # Update table with new data
-        if title:
-            self._title = title
-        if content:
-            self._content = content
-        if channel_id:
-            self._channel_id = channel_id
-        if user_id:
-            self._user_id = user_id
-
         try:
             db.session.commit()
-        except IntegrityError:
+            return self
+        except IntegrityError as e:
             db.session.rollback()
-            logging.warning(f"IntegrityError: Could not update post with title '{title}' due to missing channel_id.")
-            return None
-        return self
+        logging.warning(f"IntegrityError: Could not update post with title '{self._title}' due to {str(e)}.")
+        return None
+
     
     def delete(self):
         """
@@ -159,15 +141,17 @@ class Post(db.Model):
     @staticmethod
     def restore(data):
         for post_data in data:
-            _ = post_data.pop('id', None)  # Remove 'id' from post_data
-            title = post_data.get("title", None)
+            post_id = post_data.pop('id', None)  # Remove 'id' from post_data
+            title = post_data.get("title")
             post = Post.query.filter_by(_title=title).first()
             if post:
+                # Update the existing post
                 post.update(post_data)
             else:
+                # Create a new post
                 post = Post(**post_data)
-                post.update(post_data)
                 post.create()
+
         
 def initPosts():
     """
