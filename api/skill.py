@@ -78,3 +78,6 @@ api.add_resource(SkillAPI._ALL, '/skill/all')
 #GET data --> { "skill_id": 1 }
 #PUT updates skill --> {  "skill_id": 1, "skill_name": "Updated Skill Name",  "expertise_level": "Updated Expertise Level"}
 #POST add data ---> {"user_id": 1, "skill_name": "Python Development",  "expertise_level": "Advanced"}
+# ./scripts/db_init.py 
+# ./scripts/db_backup.py
+# ./scripts/db_restore.py
