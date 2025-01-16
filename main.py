@@ -28,7 +28,7 @@ from api.carphoto import car_api
 from api.carChat import car_chat_api
 from api.vote import vote_api
 from api.events import event_api  # Import the event API
-from api.skill import skill_api  # Import the Skill API
+from api.skill import skill_api  # Nora api 4 Table!
 from api.notifications import notifications_api  # Import the notifications API
 
 # database Initialization functions
