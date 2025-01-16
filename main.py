@@ -32,6 +32,7 @@ from api.vote import vote_api
 from api.events import event_api  # Vibha
 from api.notifications import notifications_api  # Kushi
 from api.userPreferences import user_preference_api # Spencer
+from api.chatbot import chatbot_api # Soni
 
 # database Initialization functions
 from model.carChat import CarChat
@@ -46,7 +47,7 @@ from model.vote import Vote, initVotes
 
 from model.events import Event, initEvents  # Vibha
 from model.notifications import Notification # Kushi
-from model.giftinator import Giftinator, initGiftinator # Soni
+from model.chatbot import Chatbot, initChatbot # Soni
 from model.nora import Nora # Nora
 from model.userPreferences import UserPreference, initUserPreferences  # Spencer
 
@@ -68,6 +69,7 @@ app.register_blueprint(car_api)
 app.register_blueprint(event_api)
 app.register_blueprint(notifications_api)  # Register the notifications API
 app.register_blueprint(user_preference_api)
+app.register_blueprint(chatbot_api) # Soni
 
 # Tell Flask-Login the view function name of your login route
 login_manager.login_view = "login"
@@ -178,6 +180,7 @@ def generate_data():
     initEvents()  # Vibha
     Notification.init_notifications()  # Kushi
     initUserPreferences() # Spencer
+    initChatbot()
 # Backup the old database
 def backup_database(db_uri, backup_uri):
     """Backup the current database."""

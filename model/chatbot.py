@@ -3,9 +3,8 @@ from __init__ import db
 from model.user import User  # Assuming User is needed for valid user references
 
 
-class Giftinator(db.Model):
-    __tablename__ = 'giftinator'
-
+class Chatbot(db.Model):
+    __tablename__ = 'chatbot'  # Changed to reflect the new file name
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     _yesNo = db.Column(db.String(255), nullable=False)
@@ -43,18 +42,15 @@ class Giftinator(db.Model):
         }
 
 
-def initGiftinator():
-    """Initialize sample data for the Giftinator table."""
+def initChatbot():
+    """Initialize sample data for the Chatbot table."""
     user = User.query.first()  # Assuming at least one user exists
     if user:
-        sample_gift = Giftinator(yesNo="Yes", user_id=user.id)
+        sample_chat = Chatbot(yesNo="Yes", user_id=user.id)
         try:
-            sample_gift.create()
-            print("Giftinator sample data initialized.")
+            sample_chat.create()
+            print("Chatbot sample data initialized.")
         except Exception as e:
-            print(f"Error initializing Giftinator data: {e}")
+            print(f"Error initializing Chatbot data: {e}")
     else:
-        print("No users found. Please create a user before initializing Giftinator.")
-
-
-
+        print("No users found. Please create a user before initializing Chatbot.")
