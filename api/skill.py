@@ -72,3 +72,8 @@ class SkillAPI:
 # Map API endpoints
 api.add_resource(SkillAPI._CRUD, '/skill')
 api.add_resource(SkillAPI._ALL, '/skill/all')
+
+#TESTING IN POSTMAN
+#Authenticate --> {"uid": "toby", "password": "123Toby!"} 
+#GET data --> { "skill_id": 1 }
+#PUT updates skill --> {  "skill_id": 1, "skill_name": "Updated Skill Name",  "expertise_level": "Updated Expertise Level"}
