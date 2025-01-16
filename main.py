@@ -27,10 +27,12 @@ from api.messages_api import messages_api # Adi added this, messages for his web
 from api.carphoto import car_api
 from api.carChat import car_chat_api
 from api.vote import vote_api
+
 from api.events import event_api  # Import the event API
 from api.skill import skill_api  # Nora api 4 Table!
-from api.notifications import notifications_api  # Import the notifications API
-
+from api.notifications import notifications_api  # 
+from api.chatbot import chatbot_api  # Soni
+from api.userPreferences import user_preference_api
 # database Initialization functions
 from model.carChat import CarChat
 from model.user import User, initUsers
@@ -46,8 +48,7 @@ from model.events import Event, initEvents  # Vibha
 from model.notifications import Notification # Kushi
 from model.chatbot import Chatbot, initChatbot # Soni
 from model.userPreferences import UserPreference, initUserPreferences  # Spencer
-from model.skill import Skill, init_skills # Nora
-from model.spencer import spencer # spencer
+from model.skill import Skill  # Nora
 
 
 # register URIs for api endpoints
@@ -69,9 +70,7 @@ app.register_blueprint(event_api) # Vibha
 app.register_blueprint(notifications_api)  # Kushi
 app.register_blueprint(user_preference_api) # Spencer
 app.register_blueprint(chatbot_api) # Soni
-app.register_blueprint(event_api)
-app.register_blueprint(skill_api) 
-app.register_blueprint(notifications_api)  # Register the notifications API
+app.register_blueprint(skill_api) # Nora
 
 
 # Tell Flask-Login the view function name of your login route
@@ -184,7 +183,7 @@ def generate_data():
     Notification.init_notifications()  # Kushi
     initUserPreferences() # Spencer
     initChatbot()
-    init_skills() # Nora
+    Skill.init_skills() # Nora
     
     
 # Backup the old database

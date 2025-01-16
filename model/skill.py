@@ -1,6 +1,9 @@
-from sqlite3 import IntegrityError
-from __init__ import app, db
-from model.user import User
+# skill.py
+
+from __init__ import db
+from flask import jsonify, request
+from model.user import User  # Assuming this is needed for valid user references
+from sqlalchemy.exc import IntegrityError
 
 class Skill(db.Model):
     __tablename__ = 'skill'
@@ -19,7 +22,7 @@ class Skill(db.Model):
         try:
             db.session.add(self)
             db.session.commit()
-        except Exception as e:
+        except IntegrityError as e:
             db.session.rollback()
             raise e
 
@@ -30,20 +33,16 @@ class Skill(db.Model):
             'skill_name': self.skill_name,
             'expertise_level': self.expertise_level,
         }
+
     @staticmethod
     def init_skills():
-        # Initialization logic here
-
-        """
-        Initialize the skill table with sample data.
-        """
+        """Initialize the skill table with sample data."""
         sample_skills = [
             {"user_id": 1, "skill_name": "Python", "expertise_level": "Advanced"},
             {"user_id": 2, "skill_name": "Java", "expertise_level": "Intermediate"},
             {"user_id": 3, "skill_name": "React", "expertise_level": "Beginner"},
             {"user_id": 4, "skill_name": "Machine Learning", "expertise_level": "Advanced"}
         ]
-
         for sample in sample_skills:
             try:
                 skill = Skill(
@@ -57,13 +56,9 @@ class Skill(db.Model):
                 print(f"Error adding skill: {e}")
         db.session.commit()
 
-
-
     @staticmethod
     def restore(data):
-        """
-        Restore skill entries from JSON data.
-        """
+        """Restore skill entries from JSON data."""
         for entry in data:
             try:
                 skill = Skill(
@@ -75,4 +70,3 @@ class Skill(db.Model):
             except IntegrityError:
                 db.session.rollback()
         db.session.commit()
-
