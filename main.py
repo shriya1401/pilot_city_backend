@@ -66,9 +66,10 @@ app.register_blueprint(nestPost_api)
 app.register_blueprint(nestImg_api)
 app.register_blueprint(vote_api)
 app.register_blueprint(car_api)
-app.register_blueprint(event_api)
-app.register_blueprint(notifications_api)  # Register the notifications API
-app.register_blueprint(user_preference_api)
+
+app.register_blueprint(event_api) # Vibha
+app.register_blueprint(notifications_api)  # Kushi
+app.register_blueprint(user_preference_api) # Spencer
 app.register_blueprint(chatbot_api) # Soni
 
 # Tell Flask-Login the view function name of your login route
