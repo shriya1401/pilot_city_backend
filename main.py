@@ -184,8 +184,7 @@ def generate_data():
     Notification.init_notifications()  # Kushi
     initUserPreferences() # Spencer
     initChatbot()
-    init_skills()
-    initEvents()
+    init_skills() # Nora
     
     
 # Backup the old database
