@@ -1,6 +1,5 @@
-# events.py in the API
 from datetime import datetime
-from flask import Blueprint, request, jsonify, g
+from flask import Blueprint, request, jsonify
 from flask_restful import Api, Resource
 from api.jwt_authorize import token_required  # Assuming token authentication is required
 from model.events import Event  # Import the Event model
@@ -17,17 +16,21 @@ class EventAPI:
         def post(self):
             """Create a new event."""
             data = request.get_json()
-            if not data or 'name' not in data or 'location' not in data or 'start_date' not in data or 'end_date' not in data:
+            if not data or 'name' not in data or 'location' not in data or 'date' not in data:
                 return {"message": "Missing required fields"}, 400
 
             try:
+                # Validate the date format (YYYY-MM-DD)
+                try:
+                    event_date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+                except ValueError:
+                    return {"message": "Invalid date format. Use YYYY-MM-DD."}, 400
+
                 # Create an Event instance
                 event = Event(
                     name=data['name'],
-                    description=data.get('description', ''),
                     location=data['location'],
-                    start_date=datetime.fromisoformat(data['start_date']),
-                    end_date=datetime.fromisoformat(data['end_date'])
+                    date=event_date
                 )
                 event.create()
                 return jsonify(event.read())
@@ -59,7 +62,17 @@ class EventAPI:
                 return {"message": "Event not found"}, 404
 
             try:
-                event.update(data)
+                if 'name' in data:
+                    event.name = data['name']
+                if 'location' in data:
+                    event.location = data['location']
+                if 'date' in data:
+                    try:
+                        event.date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+                    except ValueError:
+                        return {"message": "Invalid date format. Use YYYY-MM-DD."}, 400
+
+                event.update()
                 return jsonify(event.read())
             except Exception as e:
                 return {"message": str(e)}, 500

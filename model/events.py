@@ -1,5 +1,3 @@
-# events.py
-
 # imports from flask
 import logging
 from flask import jsonify
@@ -15,20 +13,16 @@ class Event(db.Model):
 
     event_id = db.Column(db.Integer, primary_key=True)  # Primary key for the event
     name = db.Column(db.String(255), nullable=False)  # Event name
-    description = db.Column(db.Text, nullable=True)  # Event description
     location = db.Column(db.String(255), nullable=False)  # Event location
-    start_date = db.Column(db.DateTime, nullable=False)  # Event start date
-    end_date = db.Column(db.DateTime, nullable=False)  # Event end date
+    date = db.Column(db.Date, nullable=False)  # Event date (without time)
 
-    def __init__(self, name, description, location, start_date, end_date):
+    def __init__(self, name, location, date):
         self.name = name
-        self.description = description
         self.location = location
-        self.start_date = start_date
-        self.end_date = end_date
+        self.date = date
 
     def __repr__(self):
-        return f"Event(id={self.event_id}, name={self.name}, location={self.location}, start_date={self.start_date}, end_date={self.end_date})"
+        return f"Event(id={self.event_id}, name={self.name}, location={self.location}, date={self.date})"
 
     def create(self):
         """Creates a new event in the database."""
@@ -46,19 +40,19 @@ class Event(db.Model):
         return {
             "event_id": self.event_id,
             "name": self.name,
-            "description": self.description,
             "location": self.location,
-            "start_date": self.start_date.isoformat(),
-            "end_date": self.end_date.isoformat()
+            "date": self.date.isoformat()
         }
 
     def update(self, data):
         """Updates the event with new data."""
         self.name = data.get('name', self.name)
-        self.description = data.get('description', self.description)
         self.location = data.get('location', self.location)
-        self.start_date = data.get('start_date', self.start_date)
-        self.end_date = data.get('end_date', self.end_date)
+        if 'date' in data:
+            try:
+                self.date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+            except ValueError:
+                return None  # Invalid date format
 
         try:
             db.session.commit()
@@ -79,27 +73,16 @@ class Event(db.Model):
             return None
         return self
 
+
 # Initialize sample events
 def initEvents():
     """Initialize some sample events in the database."""
     events = [
-    Event(name='Tech Conference 2025', description='A conference about the future of technology with industry leaders and innovators.',
-          location='San Francisco Convention Center, San Francisco, CA', 
-          start_date=datetime(2025, 3, 12, 9, 0), end_date=datetime(2025, 3, 12, 17, 0)),
-    
-    Event(name='Cooking Masterclass', description='A hands-on cooking masterclass with a Michelin star chef.',
-          location='Culinary Institute of America, Napa Valley, CA',
-          start_date=datetime(2025, 4, 5, 10, 0), end_date=datetime(2025, 4, 5, 14, 0)),
-    
-    Event(name='AI and Machine Learning Workshop', description='A deep dive into the applications of AI in the modern world.',
-          location='MIT Media Lab, Cambridge, MA', 
-          start_date=datetime(2025, 6, 10, 13, 0), end_date=datetime(2025, 6, 10, 17, 0)),
-    
-    Event(name='Music Festival 2025', description='A three-day music festival featuring top bands, food trucks, and a vibrant atmosphere.',
-          location='Central Park, New York City, NY', 
-          start_date=datetime(2025, 7, 1, 14, 0), end_date=datetime(2025, 7, 3, 22, 0))
-]
-
+        Event(name='Tech Conference 2025', location='San Francisco Convention Center, San Francisco, CA', date=datetime(2025, 3, 12).date()),
+        Event(name='Cooking Masterclass', location='Culinary Institute of America, Napa Valley, CA', date=datetime(2025, 4, 5).date()),
+        Event(name='AI and Machine Learning Workshop', location='MIT Media Lab, Cambridge, MA', date=datetime(2025, 6, 10).date()),
+        Event(name='Music Festival 2025', location='Central Park, New York City, NY', date=datetime(2025, 7, 1).date())
+    ]
 
     for event in events:
         try:
@@ -110,13 +93,14 @@ def initEvents():
             db.session.rollback()
             logging.warning(f"Failed to create event: {event.name}. Error: {str(e)}")
 
-# API routes to interact with events
 
+# API routes to interact with events
 @app.route('/events', methods=['GET'])
 def get_events():
     """Returns a list of all events."""
     events = Event.query.all()
     return jsonify([event.read() for event in events])
+
 
 @app.route('/event/<int:event_id>', methods=['GET'])
 def get_event(event_id):
@@ -126,19 +110,24 @@ def get_event(event_id):
         return jsonify(event.read())
     return jsonify({'error': 'Event not found'}), 404
 
+
 @app.route('/event', methods=['POST'])
 def create_event():
     """Creates a new event."""
     data = request.get_json()
+    try:
+        event_date = datetime.strptime(data.get('date'), '%Y-%m-%d').date()
+    except (ValueError, TypeError):
+        return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD.'}), 400
+
     event = Event(
         name=data.get('name'),
-        description=data.get('description'),
         location=data.get('location'),
-        start_date=datetime.fromisoformat(data.get('start_date')),
-        end_date=datetime.fromisoformat(data.get('end_date'))
+        date=event_date
     )
     event.create()
     return jsonify(event.read()), 201
+
 
 @app.route('/event/<int:event_id>', methods=['PUT'])
 def update_event(event_id):
@@ -146,9 +135,11 @@ def update_event(event_id):
     event = Event.query.get(event_id)
     if event:
         data = request.get_json()
-        event.update(data)
+        if event.update(data) is None:
+            return jsonify({'error': 'Invalid data provided for update.'}), 400
         return jsonify(event.read())
     return jsonify({'error': 'Event not found'}), 404
+
 
 @app.route('/event/<int:event_id>', methods=['DELETE'])
 def delete_event(event_id):
@@ -158,6 +149,7 @@ def delete_event(event_id):
         event.delete()
         return jsonify({'message': 'Event deleted successfully'}), 200
     return jsonify({'error': 'Event not found'}), 404
+
 
 # Run the application
 if __name__ == '__main__':
