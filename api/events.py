@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, g
 from flask_restful import Api, Resource
 from api.jwt_authorize import token_required  # Assuming token authentication is required
 from model.events import Event  # Import the Event model
@@ -15,27 +15,39 @@ class EventAPI:
         @token_required()
         def post(self):
             """Create a new event."""
+            # Obtain the current user from the token required setting in the global context
+            current_user = g.current_user
+            
+            # Obtain the request data sent by the RESTful client API
             data = request.get_json()
-            if not data or 'name' not in data or 'location' not in data or 'date' not in data:
-                return {"message": "Missing required fields"}, 400
 
+            # Validate the presence of required keys
+            if not data:
+                return {'message': 'No input data provided'}, 400
+            if 'name' not in data:
+                return {'message': 'Event name is required'}, 400
+            if 'location' not in data:
+                return {'message': 'Event location is required'}, 400
+            if 'date' not in data:
+                return {'message': 'Event date is required'}, 400
+
+            # Validate the date format (YYYY-MM-DD)
             try:
-                # Validate the date format (YYYY-MM-DD)
-                try:
-                    event_date = datetime.strptime(data['date'], '%Y-%m-%d').date()
-                except ValueError:
-                    return {"message": "Invalid date format. Use YYYY-MM-DD."}, 400
+                event_date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+            except ValueError:
+                return {"message": "Invalid date format. Use YYYY-MM-DD."}, 400
 
-                # Create an Event instance
-                event = Event(
-                    name=data['name'],
-                    location=data['location'],
-                    date=event_date
-                )
-                event.create()
-                return jsonify(event.read())
-            except Exception as e:
-                return {"message": str(e)}, 500
+            # Create an Event instance
+            event = Event(
+                name=data['name'],
+                location=data['location'],
+                date=event_date,
+                user_id=current_user.id  # Attach the current user ID to the event
+            )
+
+            # Save the event object using the ORM method defined in the model
+            event.create()
+            return jsonify(event.read())
 
         @token_required()
         def get(self):
