@@ -115,6 +115,16 @@ class EventAPI:
             events = Event.query.all()
             return jsonify([event.read() for event in events])
 
+    class _BY_USER(Resource):
+        @token_required()
+        def get(self, user_id):
+            """Retrieve events by user ID."""
+            events = Event.query.filter_by(user_id=user_id).all()  # Filter events by user_id
+            if not events:
+                return {"message": "No events found for this user."}, 404
+            return jsonify([event.read() for event in events])
+
 # Map API endpoints
 api.add_resource(EventAPI._CRUD, '/event')
 api.add_resource(EventAPI._ALL, '/events')
+api.add_resource(EventAPI._BY_USER, '/events/user/<int:user_id>')  # New endpoint to get events by user ID
