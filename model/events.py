@@ -5,24 +5,27 @@ from sqlalchemy.exc import IntegrityError
 from __init__ import app, db  # Assuming __init__.py initializes app and db
 from datetime import datetime
 from flask import request
-
+from model.user import User  # Import the User model
 
 # Event Model
 class Event(db.Model):
     __tablename__ = 'events'
 
+    # Define user_id as the first column
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # New user_id column
     event_id = db.Column(db.Integer, primary_key=True)  # Primary key for the event
     name = db.Column(db.String(255), nullable=False)  # Event name
     location = db.Column(db.String(255), nullable=False)  # Event location
     date = db.Column(db.Date, nullable=False)  # Event date (without time)
 
-    def __init__(self, name, location, date):
+    def __init__(self, name, location, date, user_id):
         self.name = name
         self.location = location
         self.date = date
+        self.user_id = user_id  # Store the user_id
 
     def __repr__(self):
-        return f"Event(id={self.event_id}, name={self.name}, location={self.location}, date={self.date})"
+        return f"Event(id={self.event_id}, name={self.name}, location={self.location}, date={self.date}, user_id={self.user_id})"
 
     def create(self):
         """Creates a new event in the database."""
@@ -41,7 +44,8 @@ class Event(db.Model):
             "event_id": self.event_id,
             "name": self.name,
             "location": self.location,
-            "date": self.date.isoformat()
+            "date": self.date.isoformat(),
+            "user_id": self.user_id  # Include the user_id in the read data
         }
 
     def update(self, data):
@@ -53,6 +57,8 @@ class Event(db.Model):
                 self.date = datetime.strptime(data['date'], '%Y-%m-%d').date()
             except ValueError:
                 return None  # Invalid date format
+        if 'user_id' in data:
+            self.user_id = data.get('user_id', self.user_id)  # Update user_id if provided
 
         try:
             db.session.commit()
@@ -78,10 +84,10 @@ class Event(db.Model):
 def initEvents():
     """Initialize some sample events in the database."""
     events = [
-        Event(name='Tech Conference 2025', location='San Francisco Convention Center, San Francisco, CA', date=datetime(2025, 3, 12).date()),
-        Event(name='Cooking Masterclass', location='Culinary Institute of America, Napa Valley, CA', date=datetime(2025, 4, 5).date()),
-        Event(name='AI and Machine Learning Workshop', location='MIT Media Lab, Cambridge, MA', date=datetime(2025, 6, 10).date()),
-        Event(name='Music Festival 2025', location='Central Park, New York City, NY', date=datetime(2025, 7, 1).date())
+        Event(name='Tech Conference 2025', location='San Francisco Convention Center, San Francisco, CA', date=datetime(2025, 3, 12).date(), user_id=1),
+        Event(name='Cooking Masterclass', location='Culinary Institute of America, Napa Valley, CA', date=datetime(2025, 4, 5).date(), user_id=2),
+        Event(name='AI and Machine Learning Workshop', location='MIT Media Lab, Cambridge, MA', date=datetime(2025, 6, 10).date(), user_id=3),
+        Event(name='Music Festival 2025', location='Central Park, New York City, NY', date=datetime(2025, 7, 1).date(), user_id=1)
     ]
 
     for event in events:
@@ -123,7 +129,8 @@ def create_event():
     event = Event(
         name=data.get('name'),
         location=data.get('location'),
-        date=event_date
+        date=event_date,
+        user_id=data.get('user_id')  # Make sure the user_id is passed in the request
     )
     event.create()
     return jsonify(event.read()), 201
