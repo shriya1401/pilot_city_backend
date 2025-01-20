@@ -1,6 +1,8 @@
-from datetime import datetime
-from flask import Blueprint, request, jsonify, g
+import jwt
+from flask import Blueprint, request, jsonify, current_app, Response, g
 from flask_restful import Api, Resource
+from datetime import datetime
+from __init__ import app
 from api.jwt_authorize import token_required  # Assuming token authentication is required
 from model.events import Event  # Import the Event model
 
