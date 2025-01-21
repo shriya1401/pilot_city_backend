@@ -1,7 +1,9 @@
 import json
+import os
 from flask import Flask, request, jsonify, Blueprint
 from flask_cors import CORS
-import os
+from model.search import SearchHistory, db  # Import SearchHistory and database object
+from sqlalchemy.exc import IntegrityError  # For handling database errors
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -10,7 +12,7 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://127.0.0.1:4887"}})
 
 # Define the Blueprint
-search_api = Blueprint('search_api', __name__)
+search_api = Blueprint('search_api', __name__, url_prefix='/api/search')
 
 # File to save items data
 DATA_FILE = "items_data.json"
@@ -41,24 +43,38 @@ def load_items():
         {"name": "Perfume Gift Set", "link": "holiday/scented", "tags": {"all": 1, "perfume": 0, "gift": 0, "set": 0, "scented": 0}}
     ]
 
+# Initialize items
+items = load_items()
+
 # Save items to the JSON file
 def save_items():
     with open(DATA_FILE, "w") as file:
         json.dump(items, file, indent=4)
 
-# Initialize items
-items = load_items()
-
 @search_api.route('/search', methods=['GET', 'OPTIONS'])
 def search_items():
     query = request.args.get('q', '').lower()
+    user_id = request.args.get('user_id', 'guest')  # Simulate user identification (default to "guest")
+
     if not query:
         return jsonify([])
+
+    # Search logic
     results = [
         item for item in items if query in item["name"].lower() or any(query in tag for tag in item["tags"])
     ]
-    return jsonify(results)
 
+    # Save search query to the database
+    associated_tags = [item["tags"] for item in results]
+    search_entry = SearchHistory(user=user_id, query=query, tags=associated_tags)
+    try:
+        db.session.add(search_entry)
+        db.session.commit()
+    except IntegrityError as e:
+        db.session.rollback()
+        return jsonify({"error": f"Failed to log search query: {str(e)}"}), 500
+
+    return jsonify(results)
 
 @search_api.route('/increment_tag', methods=['POST', 'OPTIONS'])
 def increment_tag():

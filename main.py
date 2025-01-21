@@ -27,12 +27,13 @@ from api.messages_api import messages_api # Adi added this, messages for his web
 from api.carphoto import car_api
 from api.carChat import car_chat_api
 from api.vote import vote_api
-
 from api.events import event_api  # Import the event API
 from api.skill import skill_api  # Nora api 4 Table!
 from api.notifications import notifications_api  # 
 from api.chatbot import chatbot_api  # Soni
 from api.userPreferences import user_preference_api
+from api.search import search_api # Nora 
+
 # database Initialization functions
 from model.carChat import CarChat
 from model.user import User, initUsers
@@ -42,13 +43,13 @@ from model.channel import Channel, initChannels
 from model.post import Post, initPosts
 from model.nestPost import NestPost, initNestPosts # Justin added this, custom format for his website
 from model.vote import Vote, initVotes
-
-
 from model.events import Event, initEvents  # Vibha
 from model.notifications import Notification # Kushi
 from model.chatbot import Chatbot, initChatbot # Soni
 from model.userPreferences import UserPreference, initUserPreferences  # Spencer
 from model.skill import Skill  # Nora
+from model.search import SearchHistory, initSearchHistory  # Nora 
+
 
 
 # register URIs for api endpoints
@@ -71,6 +72,7 @@ app.register_blueprint(notifications_api)  # Kushi
 app.register_blueprint(user_preference_api) # Spencer
 app.register_blueprint(chatbot_api) # Soni
 app.register_blueprint(skill_api) # Nora
+app.register_blueprint(search_api)  
 
 
 # Tell Flask-Login the view function name of your login route
@@ -184,6 +186,7 @@ def generate_data():
     initUserPreferences() # Spencer
     initChatbot()
     Skill.init_skills() # Nora
+    initSearchHistory()
     
     
 # Backup the old database
