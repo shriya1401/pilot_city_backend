@@ -11,17 +11,15 @@ class SearchHistory(db.Model):
     user = db.Column(db.String(255), nullable=False)  # User performing the search
     query = db.Column(db.String(255), nullable=True)  # Search query string
     tags = db.Column(db.JSON, nullable=True)  # JSON to store associated tags
-    item_clicked = db.Column(db.String(255), nullable=True)  # Item the user clicked on
 
-    def __init__(self, user, query=None, tags=None, item_clicked=None):
+    def __init__(self, user, query=None, tags=None):
         self.user = user
         self.query = query
         self.tags = tags
-        self.item_clicked = item_clicked
 
     def __repr__(self):
         return (f"SearchHistory(user={self.user}, query={self.query}, "
-                f"tags={self.tags}, item_clicked={self.item_clicked})")
+                f"tags={self.tags}")
 
     def create(self):
         """
@@ -45,7 +43,6 @@ class SearchHistory(db.Model):
             "user": self.user,
             "query": self.query,
             "tags": self.tags,
-            "item_clicked": self.item_clicked
         }
 
     @staticmethod
@@ -71,7 +68,6 @@ class SearchHistory(db.Model):
 
             # Aggregate tags and clicked items
             tag_counts = {}
-            clicked_items = {}
 
             for entry in user_history:
                 # Aggregate tags
@@ -79,13 +75,10 @@ class SearchHistory(db.Model):
                     for tag, count in entry.tags.items():
                         tag_counts[tag] = tag_counts.get(tag, 0) + count
 
-                # Track clicked items
-                if entry.item_clicked:
-                    clicked_items[entry.item_clicked] = clicked_items.get(entry.item_clicked, 0) + 1
+
 
             return {
                 "tags": tag_counts,
-                "clicked_items": clicked_items
             }
         except Exception as e:
             logging.error(f"Error retrieving preferences for user {user}: {str(e)}")
