@@ -10,7 +10,6 @@ from model.user import User
 user_api = Blueprint('user_api', __name__, url_prefix='/api')
 
 # Create an Api object and associate it with the Blueprint
-# API docs: https://flask-restful.readthedocs.io/en/latest/api.html
 api = Api(user_api)
 
 class UserAPI:
@@ -234,6 +233,7 @@ class UserAPI:
                     "message": "Failed to invalidate token",
                     "error": str(e)
                 }, 500
+
     class _ID(Resource):  # Individual identification API operation
         @token_required()
         def get(self):
@@ -242,8 +242,33 @@ class UserAPI:
             ''' Return the current user as a json object '''
             return jsonify(current_user.read())
 
+    class _GET_ID_NAME(Resource):
+        """
+        Users API operation for returning only user ID and name.
+        """
+        
+        @token_required()
+        def get(self):
+            """
+            Retrieve all users and return only their ID and name.
+            """
+            current_user = g.current_user
+            users = User.query.all()  # Retrieve all users from the database
+
+            # Prepare a simplified JSON list with only name and id
+            json_ready = []
+            for user in users:
+                user_data = {
+                    "id": user.id,
+                    "name": user.name
+                }
+                json_ready.append(user_data)
+
+            return jsonify(json_ready)
+
 # Register the API resources with the Blueprint
 api.add_resource(UserAPI._ID, '/id')
 api.add_resource(UserAPI._BULK_CRUD, '/users')
 api.add_resource(UserAPI._CRUD, '/user')
 api.add_resource(UserAPI._Security, '/authenticate')
+api.add_resource(UserAPI._GET_ID_NAME, '/users/id-name')
