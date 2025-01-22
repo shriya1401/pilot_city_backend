@@ -48,7 +48,7 @@ from model.notifications import Notification # Kushi
 from model.chatbot import Chatbot, initChatbot # Soni
 from model.userPreferences import UserPreference, initUserPreferences  # Spencer
 from model.skill import Skill  # Nora
-from model.search import SearchHistory, initSearchHistory  # Nora 
+from model.search import SearchHistory # Nora
 
 
 
@@ -186,7 +186,7 @@ def generate_data():
     initUserPreferences() # Spencer
     initChatbot()
     Skill.init_skills() # Nora
-    initSearchHistory()
+    SearchHistory.init_search_history()
     
     
 # Backup the old database

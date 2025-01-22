@@ -1,6 +1,7 @@
 import logging
 from sqlalchemy.exc import IntegrityError
-from __init__ import db  # Assuming __init__.py initializes db
+from __init__ import db
+
 
 # SearchHistory Model
 class SearchHistory(db.Model):
@@ -19,20 +20,38 @@ class SearchHistory(db.Model):
     def __repr__(self):
         return f"SearchHistory(user={self.user}, query={self.query}, tags={self.tags})"
 
-# Initialize SearchHistory table with sample data
-def initSearchHistory():
-    """Add sample data to the SearchHistory table."""
-    sample_searches = [
-        SearchHistory(user="guest", query="teddy bear", tags={"all": 1, "teddy": 0, "bear": 0, "toys": 0}),
-        SearchHistory(user="guest", query="lego set", tags={"all": 1, "lego": 0, "set": 0, "toys": 0}),
-        SearchHistory(user="guest", query="holiday candles", tags={"all": 1, "holiday": 0, "candles": 0, "home-decor": 0}),
-    ]
-
-    for search_entry in sample_searches:
+    def create(self):
+        """
+        Adds a new SearchHistory entry to the database.
+        """
         try:
-            db.session.add(search_entry)
+            db.session.add(self)
             db.session.commit()
-            print(f"SearchHistory entry created: {search_entry.query}")
         except IntegrityError as e:
             db.session.rollback()
-            logging.warning(f"Error adding SearchHistory entry: {search_entry.query}. Error: {str(e)}")
+            logging.warning(f"Error creating SearchHistory entry: {self.query}. Error: {str(e)}")
+            return None
+        return self
+
+    def read(self):
+        """
+        Converts a SearchHistory object to a dictionary for JSON serialization.
+        """
+        return {
+            "id": self.id,
+            "user": self.user,
+            "query": self.query,
+            "tags": self.tags
+        }
+
+    @staticmethod
+    def init_search_history():
+        """
+        Ensures the SearchHistory table is created and ready for use.
+        """
+        try:
+            db.create_all()  # Create table if it doesn't already exist
+            logging.info("SearchHistory table initialized successfully.")
+        except Exception as e:
+            logging.error(f"Failed to initialize SearchHistory table: {str(e)}")
+
