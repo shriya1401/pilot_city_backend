@@ -31,7 +31,7 @@ from api.events import event_api  # Import the event API
 from api.skill import skill_api  # Nora api 4 Table!
 from api.notifications import notifications_api  # 
 from api.chatbot import chatbot_api  # Soni
-from api.userPreferences import user_preference_api
+from api.user_profile import user_profile_api
 from api.search import search_api # Nora 
 
 # database Initialization functions
@@ -46,7 +46,7 @@ from model.vote import Vote, initVotes
 from model.events import Event, initEvents  # Vibha
 from model.notifications import Notification # Kushi
 from model.chatbot import Chatbot, initChatbot # Soni
-from model.userPreferences import UserPreference, initUserPreferences  # Spencer
+from model.user_profile import UserProfile, initUserProfile  # Spencer
 from model.skill import Skill  # Nora
 from model.search import SearchHistory # Nora
 
@@ -69,7 +69,7 @@ app.register_blueprint(car_api)
 
 app.register_blueprint(event_api) # Vibha
 app.register_blueprint(notifications_api)  # Kushi
-app.register_blueprint(user_preference_api) # Spencer
+app.register_blueprint(user_profile_api) # Spencer
 app.register_blueprint(chatbot_api) # Soni
 app.register_blueprint(skill_api) # Nora
 app.register_blueprint(search_api)  
@@ -183,7 +183,7 @@ def generate_data():
     initVotes()
     initEvents()  # Vibha
     Notification.init_notifications()  # Kushi
-    initUserPreferences() # Spencer
+    initUserProfile() # Spencer
     initChatbot()
     Skill.init_skills() # Nora
     SearchHistory.init_search_history()
