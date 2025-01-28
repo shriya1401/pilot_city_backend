@@ -4,22 +4,33 @@ from __init__ import db
 
 
 # SearchHistory Model
+# SearchHistory Model
 class SearchHistory(db.Model):
     __tablename__ = 'search_history'
 
-    id = db.Column(db.Integer, primary_key=True)  # Primary key
-    user = db.Column(db.String(255), nullable=False)  # User performing the search
-    query = db.Column(db.String(255), nullable=True)  # Search query string
-    tags = db.Column(db.JSON, nullable=True)  # JSON to store associated tags
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(255), nullable=False)  # Exact item name
+    query = db.Column(db.String(255), nullable=True)  # Not used here but left for compatibility
+    tags = db.Column(db.JSON, nullable=False)  # Tags from the dictionary
 
-    def __init__(self, user, query=None, tags=None):
+    def __init__(self, user, name=None, query=None, tags=None):
         self.user = user
+        self.name = name
         self.query = query
         self.tags = tags
 
+    def read(self):
+        return {
+            "id": self.id,
+            "user": self.user,
+            "name": self.name,
+            "query": self.query,
+            "tags": self.tags,
+        }
+
     def __repr__(self):
-        return (f"SearchHistory(user={self.user}, query={self.query}, "
-                f"tags={self.tags}")
+        return f"SearchHistory(user={self.user}, name={self.name}, query={self.query}, tags={self.tags})"
 
     def create(self):
         """
@@ -30,7 +41,7 @@ class SearchHistory(db.Model):
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
-            logging.warning(f"Error creating SearchHistory entry: {self.query}. Error: {str(e)}")
+            logging.warning(f"Error creating SearchHistory entry: {self.name}. Error: {str(e)}")
             return None
         return self
 
@@ -41,6 +52,7 @@ class SearchHistory(db.Model):
         return {
             "id": self.id,
             "user": self.user,
+            "name": self.name,
             "query": self.query,
             "tags": self.tags,
         }
@@ -68,20 +80,12 @@ class SearchHistory(db.Model):
 
             # Aggregate tags and clicked items
             tag_counts = {}
-
             for entry in user_history:
-                # Aggregate tags
                 if entry.tags:
                     for tag, count in entry.tags.items():
                         tag_counts[tag] = tag_counts.get(tag, 0) + count
 
-
-
-            return {
-                "tags": tag_counts,
-            }
+            return {"tags": tag_counts}
         except Exception as e:
             logging.error(f"Error retrieving preferences for user {user}: {str(e)}")
             return {"error": str(e)}
-
-
