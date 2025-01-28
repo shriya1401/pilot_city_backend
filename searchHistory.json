@@ -102,5 +102,53 @@
             "set": 3,
             "food": 3
         }
+    },
+    {
+        "id": 6,
+        "user": "norie",
+        "name": "Woolen Scarf",
+        "query": null,
+        "tags": {
+            "all": 2,
+            "woolen": 1,
+            "scarf": 1,
+            "clothes": 1
+        }
+    },
+    {
+        "id": 1,
+        "user": "Nora",
+        "name": "Woolen Scarf",
+        "query": null,
+        "tags": {
+            "all": 2,
+            "woolen": 1,
+            "scarf": 1,
+            "clothes": 1
+        }
+    },
+    {
+        "id": 2,
+        "user": "toby",
+        "name": "Teddy Bear",
+        "query": null,
+        "tags": {
+            "all": 2,
+            "teddy": 1,
+            "bear": 1,
+            "toys": 1
+        }
+    },
+    {
+        "id": 3,
+        "user": "toby",
+        "name": "Teddy Bear",
+        "query": null,
+        "tags": {
+            "all": 2,
+            "teddy": 1,
+            "bear": 1,
+            "toys": 1
+        }
     }
 ]

@@ -72,6 +72,40 @@ def append_to_json(data):
     except Exception as e:
         print(f"Error saving data to JSON file: {e}")
 
+#PUT FUNCTION
+@search_api.route("/update", methods=["PUT"])
+@token_required()
+def update_search_history():
+    """
+    Updates a specific entry in the search_history table based on the provided ID.
+    """
+    data = request.get_json()  # Parse the JSON body
+    if not data or "id" not in data:
+        return jsonify({"error": "Invalid request. ID is required."}), 400
+
+    search_id = data["id"]  # ID of the item to update
+
+    # Find the existing entry in the database
+    search_entry = SearchHistory.query.filter_by(id=search_id).first()
+    if not search_entry:
+        return jsonify({"error": "Item not found."}), 404
+
+    # Update fields if provided
+    if "name" in data:
+        search_entry.name = data["name"]
+
+    if "tags" in data:
+        search_entry.tags = data["tags"]
+
+    # Save changes to the database
+    try:
+        db.session.commit()
+        return jsonify({"message": "Item updated successfully!", "item": search_entry.read()}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Failed to update item: {str(e)}"}), 500
+
+#GET FUNCTION
 @search_api.route("", methods=["GET"])
 @token_required()
 def search_items():
@@ -93,6 +127,7 @@ def search_items():
 
     return jsonify(results), 200
 
+#POST FUNCTION
 @search_api.route("/increment_tag", methods=["POST"])
 @token_required()
 def increment_tag():
