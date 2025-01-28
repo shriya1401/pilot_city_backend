@@ -155,3 +155,8 @@ app.register_blueprint(search_api)
 # Run the app
 if __name__ == "__main__":
     app.run(debug=True, host="127.0.0.1", port=8887)
+
+# Testy stuff for sqllite database
+# ./scripts/db_init.py 
+# ./scripts/db_backup.py
+# ./scripts/db_restore.py
