@@ -15,11 +15,11 @@ class UserProfile(db.Model):
 
     profile_id = db.Column(db.Integer, primary_key=True)  # Primary key for the profile
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Foreign key to User
-    link = db.Column(db.string(255), default='http://127.0.0.1:8887/socialmedia_frontend/images/logo.png') # Profile picture
+    link = db.Column(db.String(255), default='default_link') # Profile picture
     name = db.Column(db.String(255), default='toby')  # name profile
     theme = db.Column(db.String(255), default='light')  # theme profile
 
-    def __init__(self, user_id, link='http://127.0.0.1:8887/socialmedia_frontend/images/logo.png', name='toby', theme='light'):
+    def __init__(self, user_id, link='default_link', name='toby', theme='light'):
         self.user_id = user_id
         self.link = link
         self.name = name
@@ -79,9 +79,9 @@ def initUserProfile():
     """Initialize some sample user profile in the database."""
     users = User.query.all()  # Fetch all users to assign profile
     sample_profile = [
-        UserProfile(user_id=users[0].id, link='http://127.0.0.1:8887/socialmedia_frontend/images/logo.png', name='mort', theme='light'),
-        UserProfile(user_id=users[1].id, link='http://127.0.0.1:8887/socialmedia_frontend/images/logo.png', name='toby', theme='dark'),
-        UserProfile(user_id=users[2].id, link='http://127.0.0.1:8887/socialmedia_frontend/images/logo.png', name='rando', theme='light'),
+        UserProfile(user_id=users[0].id, link='default_link', name='mort', theme='light'),
+        UserProfile(user_id=users[1].id, link='default_link', name='toby', theme='dark'),
+        UserProfile(user_id=users[2].id, link='default_link', name='rando', theme='light'),
         # Add more sample data as needed
     ]
     for profile in sample_profile:
@@ -115,7 +115,7 @@ def create_user_profile(user_id):
     data = request.get_json()
     profile = UserProfile(
         user_id=user_id,
-        link=data.get('link', 'http://127.0.0.1:8887/socialmedia_frontend/images/logo.png'),
+        link=data.get('link', 'default_link'),
         name=data.get('name', 'toby'),
         theme=data.get('theme', 'theme')
     )

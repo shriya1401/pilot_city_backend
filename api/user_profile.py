@@ -33,7 +33,7 @@ class UserProfileAPI:
                 # Create a Userprofile instance
                 profile = UserProfile(
                     user_id=data['user_id'],
-                    link=data.get('link', 'http://127.0.0.1:8887/socialmedia_frontend/images/logo.png'),
+                    link=data.get('link', 'default_link'),
                     name=data.get('name', 'toby'),
                     theme=data.get('theme', 'light')
                 )
