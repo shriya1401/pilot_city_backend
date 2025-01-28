@@ -65,26 +65,24 @@ def save_chat_history(history_entry):
         return False
 
 
-from chatbot import Chatbot
-
+# Define the Chat Resource
 class ChatResource(Resource):
     def post(self):
         user_input = request.json.get('user_input', '')
-        user_id = request.json.get('user_id', 0)
-        yes_no = request.json.get('yesNo', 0)
-
-        if not user_input or user_id == 0:
-            return {"error": "Invalid input provided"}, 400
+        if not user_input:
+            return {"error": "No input provided"}, 400
 
         try:
-            # Generate a response from the AI model
-            chat_session = model.start_chat()
+            chat_history = fetch_chat_history()
+            chat_session = model.start_chat(history=chat_history)
             response = chat_session.send_message(user_input)
             assistant_response = response.text
 
-            # Save user input and response to database
-            chat_entry = Chatbot(yesNo="Yes" if yes_no else "No", user_id=user_id)
-            chat_entry.create()
+            user_entry = {"role": "user", "parts": [user_input]}
+            assistant_entry = {"role": "assistant", "parts": [assistant_response]}
+
+            save_chat_history(user_entry)
+            save_chat_history(assistant_entry)
 
             return {"response": assistant_response}, 200
         except Exception as e:
@@ -96,7 +94,6 @@ api.add_resource(ChatResource, '/chat')
 
 # Register the Blueprint with the Flask app
 app.register_blueprint(gift_api)
-
 
 
 # Run the app

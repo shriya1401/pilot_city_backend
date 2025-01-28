@@ -7,22 +7,22 @@ class Chatbot(db.Model):
     __tablename__ = 'chatbot'  # Changed to reflect the new file name
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    _yesNo = db.Column(db.String(255), nullable=False)
+    _message = db.Column(db.String(255), nullable=False)
     _user_id = db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False)
    
-    def __init__(self, yesNo, user_id):
-        self._yesNo = yesNo
+    def __init__(self, message, user_id):
+        self._message = message
         self._user_id = user_id
 
 
     @property
-    def yesNo(self):
-        return self._yesNo
+    def message(self):
+        return self._message
 
 
-    @yesNo.setter
-    def yesNo(self, value):
-        self._yesNo = value
+    @message.setter
+    def message(self, value):
+        self._message = value
 
 
     def create(self):
@@ -37,7 +37,7 @@ class Chatbot(db.Model):
     def read(self):
         return {
             'id': self.id,
-            'yesNo': self._yesNo,
+            'message': self._message,
             'user_id': self._user_id,
         }
 
@@ -46,7 +46,7 @@ def initChatbot():
     """Initialize sample data for the Chatbot table."""
     user = User.query.first()  # Assuming at least one user exists
     if user:
-        sample_chat = Chatbot(yesNo="Yes", user_id=user.id)
+        sample_chat = Chatbot(message="hello there", user_id=user.id)
         try:
             sample_chat.create()
             print("Chatbot sample data initialized.")
