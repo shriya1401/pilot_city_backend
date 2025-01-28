@@ -1,0 +1,15 @@
+[
+    {
+        "id": 5,
+        "user": "ID",
+        "name": "Gourmet Cheese Set",
+        "query": null,
+        "tags": {
+            "all": 2,
+            "gourmet": 1,
+            "cheese": 1,
+            "set": 1,
+            "food": 1
+        }
+    }
+]

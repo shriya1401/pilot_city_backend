@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import logging
 
 # Dynamically add the project root to the Python path
@@ -30,11 +31,46 @@ search_api = Blueprint("search_api", __name__, url_prefix="/api/search")
 
 # Items data
 items = [
-    {"name": "Teddy Bear", "link": "holiday/toys", "tags": {"all": 1, "teddy": 0, "bear": 0, "toys": 0}},
-    {"name": "Lego Set", "link": "holiday/toys", "tags": {"all": 1, "lego": 0, "set": 0, "toys": 0}},
-    {"name": "Remote Control Car", "link": "holiday/toys", "tags": {"all": 1, "remote": 0, "control": 0, "car": 0, "toys": 0}},
-    {"name": "Holiday Candles", "link": "holiday/home-decor", "tags": {"all": 1, "holiday": 0, "candles": 0, "home-decor": 0}},
+       {"name": "Teddy Bear", "link": "holiday/toys", "tags": {"all": 1, "teddy": 0, "bear": 0, "toys": 0}},
+       {"name": "Lego Set", "link": "holiday/toys", "tags": {"all": 1, "lego": 0, "set": 0, "toys": 0}},
+       {"name": "Remote Control Car", "link": "holiday/toys", "tags": {"all": 1, "remote": 0, "control": 0, "car": 0, "toys": 0}},
+       {"name": "Holiday Candles", "link": "holiday/home-decor", "tags": {"all": 1, "holiday": 0, "candles": 0, "home-decor": 0}},
+       {"name": "Festive Wreath", "link": "holiday/home-decor", "tags": {"all": 1, "festive": 0, "wreath": 0, "home-decor": 0}},
+       {"name": "Decorative Ornaments", "link": "holiday/home-decor", "tags": {"all": 1, "decorative": 0, "ornaments": 0, "home-decor": 0}},
+       {"name": "Wireless Headphones", "link": "holiday/electronics", "tags": {"all": 1, "wireless": 0, "headphones": 0, "electronics": 0}},
+       {"name": "Smartwatch", "link": "holiday/electronics", "tags": {"all": 1, "smartwatch": 0, "electronics": 0}},
+       {"name": "Gaming Console", "link": "holiday/electronics", "tags": {"all": 1, "gaming": 0, "console": 0, "electronics": 0}},
+       {"name": "Cozy Holiday Sweater", "link": "holiday/clothes", "tags": {"all": 1, "cozy": 0, "holiday": 0, "sweater": 0, "clothes": 0}},
+       {"name": "Woolen Scarf", "link": "holiday/clothes", "tags": {"all": 1, "woolen": 0, "scarf": 0, "clothes": 0}},
+       {"name": "Winter Gloves", "link": "holiday/clothes", "tags": {"all": 1, "winter": 0, "gloves": 0, "clothes": 0}},
+       {"name": "Holiday Cookies", "link": "holiday/food", "tags": {"all": 1, "holiday": 0, "cookies": 0, "food": 0}},
+       {"name": "Chocolate Gift Box", "link": "holiday/food", "tags": {"all": 1, "chocolate": 0, "gift": 0, "box": 0, "food": 0}},
+       {"name": "Gourmet Cheese Set", "link": "holiday/food", "tags": {"all": 1, "gourmet": 0, "cheese": 0, "set": 0, "food": 0}},
+       {"name": "Scented Candle", "link": "holiday/scented", "tags": {"all": 1, "candle": 0, "scented": 0}},
+       {"name": "Aromatic Diffuser", "link": "holiday/scented", "tags": {"all": 1, "aromatic": 0, "diffuser": 0, "scented": 0}},
+       {"name": "Perfume Gift Set", "link": "holiday/scented", "tags": {"all": 1, "perfume": 0, "gift": 0, "set": 0, "scented": 0}}
 ]
+
+# Path to JSON file for backups
+JSON_FILE_PATH = os.path.join(os.path.dirname(__file__), "../searchHistory.json")
+
+# Helper function to append data to the JSON file
+def append_to_json(data):
+    try:
+        if os.path.exists(JSON_FILE_PATH):
+            with open(JSON_FILE_PATH, "r") as json_file:
+                existing_data = json.load(json_file)
+        else:
+            existing_data = []
+
+        # Append the new data
+        existing_data.append(data)
+
+        # Write back to the file
+        with open(JSON_FILE_PATH, "w") as json_file:
+            json.dump(existing_data, json_file, indent=4)
+    except Exception as e:
+        print(f"Error saving data to JSON file: {e}")
 
 @search_api.route("", methods=["GET"])
 @token_required()
@@ -63,7 +99,7 @@ def search_items():
 def increment_tag():
     """
     Increment the tags for a specific item for the authenticated user.
-    Save the user's selection in the database.
+    Save the user's selection in the database and also to the JSON file.
     """
     data = request.get_json()
     if not data or "name" not in data:
@@ -89,6 +125,9 @@ def increment_tag():
             )
             db.session.add(search_entry)
             db.session.commit()
+
+            # Save to JSON file
+            append_to_json(search_entry.read())
         except IntegrityError as e:
             db.session.rollback()
             return jsonify({"error": f"Failed to log item selection: {str(e)}"}), 500
@@ -99,6 +138,7 @@ def increment_tag():
         }), 200
 
     return jsonify({"error": "Item not found!"}), 404
+
 
 # Ensure CORS headers are added to all responses
 @app.after_request
