@@ -1,8 +1,18 @@
 # userprofiles.py in the API
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, Flask
 from flask_restful import Api, Resource
 from api.jwt_authorize import token_required  # Assuming token authentication is required
 from model.user_profile import UserProfile  # Import the Userprofile model
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app, supports_credentials=True, resources={
+    "/api/*": {
+        "origins": "http://127.0.0.1:4887",
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+    }
+})
 
 # Create a Blueprint for the user profiles API
 user_profile_api = Blueprint('user_profile_api', __name__, url_prefix='/api')
