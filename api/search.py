@@ -93,7 +93,6 @@ def search_items():
 
     return jsonify(results), 200
 
-
 @search_api.route("/increment_tag", methods=["POST"])
 @token_required()
 def increment_tag():

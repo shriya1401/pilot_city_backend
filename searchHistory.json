@@ -63,5 +63,44 @@
             "car": 4,
             "toys": 4
         }
+    },
+    {
+        "id": 1,
+        "user": "tester",
+        "name": "Gourmet Cheese Set",
+        "query": null,
+        "tags": {
+            "all": 2,
+            "gourmet": 1,
+            "cheese": 1,
+            "set": 1,
+            "food": 1
+        }
+    },
+    {
+        "id": 2,
+        "user": "tester",
+        "name": "Gourmet Cheese Set",
+        "query": null,
+        "tags": {
+            "all": 3,
+            "gourmet": 2,
+            "cheese": 2,
+            "set": 2,
+            "food": 2
+        }
+    },
+    {
+        "id": 3,
+        "user": "tester",
+        "name": "Gourmet Cheese Set",
+        "query": null,
+        "tags": {
+            "all": 4,
+            "gourmet": 3,
+            "cheese": 3,
+            "set": 3,
+            "food": 3
+        }
     }
 ]
