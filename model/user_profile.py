@@ -15,16 +15,18 @@ class UserProfile(db.Model):
 
     profile_id = db.Column(db.Integer, primary_key=True)  # Primary key for the profile
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Foreign key to User
+    link = db.Column(db.string(255), default='http://127.0.0.1:8887/socialmedia_frontend/images/logo.png') # Profile picture
     name = db.Column(db.String(255), default='toby')  # name profile
-    password = db.Column(db.String(255), default='123Qwerty!')  # password profile
+    theme = db.Column(db.String(255), default='light')  # theme profile
 
-    def __init__(self, user_id, name='toby', password='123Qwerty!'):
+    def __init__(self, user_id, link='http://127.0.0.1:8887/socialmedia_frontend/images/logo.png', name='toby', theme='light'):
         self.user_id = user_id
+        self.link = link
         self.name = name
-        self.password = password
+        self.theme = theme
 
     def __repr__(self):
-        return f"Userprofile(id={self.profile_id}, user_id={self.user_id}, name={self.name}, password={self.password})"
+        return f"Userprofile(id={self.profile_id}, user_id={self.user_id}, link={self.link}, name={self.name}, theme={self.theme})"
 
     def create(self):
         """Creates a new user profile in the database."""
@@ -42,14 +44,16 @@ class UserProfile(db.Model):
         return {
             "profile_id": self.profile_id,
             "user_id": self.user_id,
+            "link": self.link,
             "name": self.name,
-            "password": self.password
+            "theme": self.theme
         }
 
     def update(self, data):
         """Updates the user profile with new data."""
+        self.link = data.get('link', self.link)
         self.name = data.get('name', self.name)
-        self.password = data.get('password', self.password)
+        self.theme = data.get('theme', self.theme)
 
         try:
             db.session.commit()
@@ -75,9 +79,9 @@ def initUserProfile():
     """Initialize some sample user profile in the database."""
     users = User.query.all()  # Fetch all users to assign profile
     sample_profile = [
-        UserProfile(user_id=users[0].id, name='mort', password='csp123'),
-        UserProfile(user_id=users[1].id, name='toby', password='123Qwerty!'),
-        UserProfile(user_id=users[2].id, name='rando', password='password'),
+        UserProfile(user_id=users[0].id, link='http://127.0.0.1:8887/socialmedia_frontend/images/logo.png', name='mort', theme='light'),
+        UserProfile(user_id=users[1].id, link='http://127.0.0.1:8887/socialmedia_frontend/images/logo.png', name='toby', theme='dark'),
+        UserProfile(user_id=users[2].id, link='http://127.0.0.1:8887/socialmedia_frontend/images/logo.png', name='rando', theme='light'),
         # Add more sample data as needed
     ]
     for profile in sample_profile:
@@ -111,8 +115,9 @@ def create_user_profile(user_id):
     data = request.get_json()
     profile = UserProfile(
         user_id=user_id,
+        link=data.get('link', 'http://127.0.0.1:8887/socialmedia_frontend/images/logo.png'),
         name=data.get('name', 'toby'),
-        password=data.get('password', 'password')
+        theme=data.get('theme', 'theme')
     )
     profile.create()
     return jsonify(profile.read()), 201

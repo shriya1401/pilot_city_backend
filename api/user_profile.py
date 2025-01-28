@@ -33,8 +33,9 @@ class UserProfileAPI:
                 # Create a Userprofile instance
                 profile = UserProfile(
                     user_id=data['user_id'],
+                    link=data.get('link', 'http://127.0.0.1:8887/socialmedia_frontend/images/logo.png'),
                     name=data.get('name', 'toby'),
-                    password=data.get('password', '123Qwerty!')
+                    theme=data.get('theme', 'light')
                 )
                 profile.create()
                 return jsonify(profile.read())
