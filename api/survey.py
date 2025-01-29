@@ -1,67 +1,82 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, g
 from flask_restful import Api, Resource
-from model.survey import survey
-from model.user import User  # Assuming User model is used for validation
+from __init__ import db
+from model.survey import Survey  # Import the Survey model
+from api.jwt_authorize import token_required  # Assuming token authentication is required
 
-# Blueprint and API setup
-survey_api = Blueprint('survey_api', __name__, url_prefix='/api/survey')
+# Create a Blueprint for the survey API
+survey_api = Blueprint('survey_api', __name__, url_prefix='/api')
 api = Api(survey_api)
 
-# Survey Resource: CRUD operations
-class SurveyResource(Resource):
-    def post(self):
-        """Create a new survey message."""
-        data = request.get_json()
-        
-        message = data.get('message')
-        user_id = data.get('user_id')
-        
-        if not message or not user_id:
-            return {"error": "Message and user_id are required"}, 400
-        
-        # Check if the user exists
-        user = User.query.get(user_id)
-        if not user:
-            return {"error": "User not found"}, 404
-        
-        # Create and save the survey message
-        new_survey = survey(message=message, user_id=user_id)
-        try:
-            new_survey.create()
-            return {"message": "Survey saved successfully", "data": new_survey.read()}, 201
-        except Exception as e:
-            return {"error": str(e)}, 500
+class SurveyAPI:
+    class _CRUD(Resource):
+        @token_required()
+        def post(self):
+            """Create a new survey response."""
+            current_user = g.current_user
+            data = request.get_json()
 
-    def get(self):
-        """Fetch all survey messages."""
-        surveys = survey.query.all()
-        if surveys:
-            return jsonify([s.read() for s in surveys])
-        return {"message": "No surveys found"}, 404
+            if not data or 'message' not in data:
+                return {'message': 'Survey message is required'}, 400
 
+            survey_response = Survey(
+                message=data['message'],
+                user_id=current_user.id
+            )
 
-class SurveyDetailResource(Resource):
-    def get(self, survey_id):
-        """Fetch a specific survey by ID."""
-        survey_entry = survey.query.get(survey_id)
-        if survey_entry:
-            return jsonify(survey_entry.read())
-        return {"error": "Survey not found"}, 404
-
-    def delete(self, survey_id):
-        """Delete a specific survey by ID."""
-        survey_entry = survey.query.get(survey_id)
-        if survey_entry:
             try:
-                db.session.delete(survey_entry)
-                db.session.commit()
-                return {"message": "Survey deleted successfully"}, 200
+                survey_response.create()
+                return jsonify(survey_response.read()), 201
             except Exception as e:
-                db.session.rollback()
-                return {"error": str(e)}, 500
-        return {"error": "Survey not found"}, 404
+                return {'message': str(e)}, 500
 
-# Add Resources to API
-api.add_resource(SurveyResource, '/')
-api.add_resource(SurveyDetailResource, '/survey')
+        @token_required()
+        def get(self):
+            """Retrieve a survey response by ID."""
+            data = request.get_json()
+            if not data or 'id' not in data:
+                return {'message': 'Survey ID required'}, 400
 
+            survey_response = Survey.query.get(data['id'])
+            if not survey_response:
+                return {'message': 'Survey response not found'}, 404
+
+            return jsonify(survey_response.read())
+
+        @token_required()
+        def delete(self):
+            """Delete a survey response by ID."""
+            data = request.get_json()
+            if not data or 'id' not in data:
+                return {'message': 'Survey ID required'}, 400
+
+            survey_response = Survey.query.get(data['id'])
+            if not survey_response:
+                return {'message': 'Survey response not found'}, 404
+
+            try:
+                survey_response.delete()
+                return {'message': 'Survey response deleted successfully'}, 200
+            except Exception as e:
+                return {'message': str(e)}, 500
+
+    class _ALL(Resource):
+        @token_required()
+        def get(self):
+            """Retrieve all survey responses."""
+            surveys = Survey.query.all()
+            return jsonify([survey.read() for survey in surveys])
+
+    class _BY_USER(Resource):
+        @token_required()
+        def get(self, user_id):
+            """Retrieve all survey responses by a specific user."""
+            surveys = Survey.query.filter_by(user_id=user_id).all()
+            if not surveys:
+                return {'message': 'No survey responses found for this user'}, 404
+            return jsonify([survey.read() for survey in surveys])
+
+# Map API endpoints
+api.add_resource(SurveyAPI._CRUD, '/survey')
+api.add_resource(SurveyAPI._ALL, '/surveys')
+api.add_resource(SurveyAPI._BY_USER, '/surveys/user/<int:user_id>')

@@ -33,6 +33,7 @@ from api.notifications import notifications_api  #
 from api.chatbot import chatbot_api  # Soni
 from api.user_profile import user_profile_api
 from api.search import search_api # Nora 
+from api.survey import survey_api
 
 # database Initialization functions
 from model.carChat import CarChat
@@ -46,10 +47,10 @@ from model.vote import Vote, initVotes
 from model.events import Event, initEvents  # Vibha
 from model.notifications import Notification # Kushi
 from model.chatbot import Chatbot, initChatbot # Soni
-from model.survey import survey, initsurvey # Soni
 from model.user_profile import UserProfile, initUserProfile  # Spencer
 from model.skill import Skill  # Nora
 from model.search import SearchHistory # Nora
+from model.survey import Survey, init_surveys  # Soni
 
 
 
@@ -188,6 +189,8 @@ def generate_data():
     initChatbot()
     Skill.init_skills() # Nora
     SearchHistory.init_search_history()
+    init_surveys()  # Soni
+
     
     
 # Backup the old database

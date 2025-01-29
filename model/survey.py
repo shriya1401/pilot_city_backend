@@ -1,56 +1,58 @@
-from sqlite3 import IntegrityError
+from sqlalchemy.exc import IntegrityError
 from __init__ import db
-from model.user import User  # Assuming User is needed for valid user references
+from model.user import User  # Import User model for foreign key reference
 
-
-class survey(db.Model):
-    __tablename__ = 'survey'  # Changed to reflect the new file name
+# Survey Model
+class Survey(db.Model):
+    __tablename__ = 'surveys'  # Plural table name for consistency
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    _message = db.Column(db.String(255), nullable=False)
-    _user_id = db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False)
-   
+    message = db.Column(db.String(255), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
     def __init__(self, message, user_id):
-        self._message = message
-        self._user_id = user_id
+        self.message = message
+        self.user_id = user_id
 
-
-    @property
-    def message(self):
-        return self._message
-
-
-    @message.setter
-    def message(self, value):
-        self._message = value
-
+    def __repr__(self):
+        return f"Survey(id={self.id}, message={self.message}, user_id={self.user_id})"
 
     def create(self):
+        """Adds a new survey response to the database."""
         try:
             db.session.add(self)
             db.session.commit()
-        except Exception as e:
+        except IntegrityError:
             db.session.rollback()
-            raise e
-
+            raise IntegrityError("Survey response creation failed due to a database error.")
 
     def read(self):
+        """Returns a dictionary representation of the survey response."""
         return {
             'id': self.id,
-            'message': self._message,
-            'user_id': self._user_id,
+            'message': self.message,
+            'user_id': self.user_id
         }
 
-
-def initsurvey():
-    """Initialize sample data for the survey table."""
-    user = User.query.first()  # Assuming at least one user exists
-    if user:
-        sample_chat = survey(message="good", user_id=user.id)
+    def delete(self):
+        """Deletes the survey response from the database."""
         try:
-            sample_chat.create()
-            print("survey sample data initialized.")
-        except Exception as e:
+            db.session.delete(self)
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            raise IntegrityError("Survey response deletion failed due to a database error.")
+
+# Initialize sample survey responses
+def init_surveys():
+    """Initialize some sample survey responses in the database."""
+    user = User.query.first()  # Ensure a user exists before creating sample data
+    if user:
+        sample_survey = Survey(message="Great experience!", user_id=user.id)
+        try:
+            sample_survey.create()
+            print("Survey sample data initialized.")
+        except IntegrityError as e:
             print(f"Error initializing survey data: {e}")
     else:
-        print("No users found. Please create a user before initializing survey.")
+        print("No users found. Please create a user before initializing surveys.")
