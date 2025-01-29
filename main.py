@@ -46,6 +46,7 @@ from model.vote import Vote, initVotes
 from model.events import Event, initEvents  # Vibha
 from model.notifications import Notification # Kushi
 from model.chatbot import Chatbot, initChatbot # Soni
+from model.survey import survey, initsurvey # Soni
 from model.user_profile import UserProfile, initUserProfile  # Spencer
 from model.skill import Skill  # Nora
 from model.search import SearchHistory # Nora
