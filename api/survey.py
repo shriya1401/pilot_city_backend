@@ -26,7 +26,8 @@ class SurveyAPI:
 
             try:
                 survey_response.create()
-                return jsonify(survey_response.read()), 201
+                # Directly return the dictionary from `read()`
+                return survey_response.read(), 201
             except IntegrityError:
                 return {'message': 'Survey creation failed due to database error'}, 500
 
@@ -41,7 +42,8 @@ class SurveyAPI:
             if not survey_response:
                 return {'message': 'Survey response not found'}, 404
 
-            return jsonify(survey_response.read())
+            # Directly return the dictionary from `read()`
+            return survey_response.read()
 
         @token_required()
         def delete(self):
@@ -65,7 +67,8 @@ class SurveyAPI:
         def get(self):
             """Retrieve all survey responses."""
             surveys = Survey.query.all()
-            return jsonify([survey.read() for survey in surveys])
+            # Directly return a list of dictionaries from `read()`
+            return [survey.read() for survey in surveys]
 
     class _BY_USER(Resource):
         @token_required()
@@ -74,7 +77,8 @@ class SurveyAPI:
             surveys = Survey.query.filter_by(user_id=user_id).all()
             if not surveys:
                 return {'message': 'No survey responses found for this user'}, 404
-            return jsonify([survey.read() for survey in surveys])
+            # Directly return a list of dictionaries from `read()`
+            return [survey.read() for survey in surveys]
 
 # Map API endpoints
 api.add_resource(SurveyAPI._CRUD, '/survey')
