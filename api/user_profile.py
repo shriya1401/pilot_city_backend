@@ -44,12 +44,11 @@ class UserProfileAPI:
 
         @token_required()
         def get(self):
-            """Retrieve a specific user profile by user ID."""
-            data = request.get_json()
-            if not data or 'user_id' not in data:
+            user_id = request.args.get('user_id')
+            if not user_id:
                 return {"message": "User ID required"}, 400
 
-            profile = UserProfile.query.filter_by(user_id=data['user_id']).first()
+            profile = UserProfile.query.filter_by(user_id=user_id).first()
             if not profile:
                 return {"message": "User profile not found"}, 404
 
