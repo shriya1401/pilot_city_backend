@@ -10,9 +10,6 @@ from flask import current_app
 from werkzeug.security import generate_password_hash
 import shutil
 
-from api.survey import survey_api
-app.register_blueprint(survey_api)
-
 
 # import "objects" from "this" project
 from __init__ import app, db, login_manager  # Key Flask objects 
@@ -77,6 +74,7 @@ app.register_blueprint(user_profile_api) # Spencer
 app.register_blueprint(chatbot_api) # Soni
 app.register_blueprint(skill_api) # Nora
 app.register_blueprint(search_api)
+app.register_blueprint(survey_api)
 
 
 # Tell Flask-Login the view function name of your login route

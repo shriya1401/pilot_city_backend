@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from sqlalchemy.exc import IntegrityError
 from __init__ import db
-from model.survey import Survey  # Import Survey model
 from model.user import User  # Import User model for foreign key reference
 
 app = Flask(__name__)
@@ -92,10 +91,7 @@ def init_surveys():
     else:
         print("No users found. Please create a user before initializing surveys.")
 
-# Initialize surveys on app startup (optional)
-@app.before_first_request
-def initialize():
-    init_surveys()
+
 
 # Run the app
 if __name__ == '__main__':
