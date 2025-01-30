@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify, g
 from flask_restful import Api, Resource
+from sqlalchemy.exc import IntegrityError
 from __init__ import db
-from model.survey import Survey  # Import the Survey model
-from api.jwt_authorize import token_required  # Assuming token authentication is required
+from model.survey import Survey
+from api.jwt_authorize import token_required
 
-# Create a Blueprint for the survey API
 survey_api = Blueprint('survey_api', __name__, url_prefix='/api')
 api = Api(survey_api)
 
@@ -27,17 +27,17 @@ class SurveyAPI:
             try:
                 survey_response.create()
                 return jsonify(survey_response.read()), 201
-            except Exception as e:
-                return {'message': str(e)}, 500
+            except IntegrityError:
+                return {'message': 'Survey creation failed due to database error'}, 500
 
         @token_required()
         def get(self):
             """Retrieve a survey response by ID."""
-            data = request.get_json()
-            if not data or 'id' not in data:
+            survey_id = request.args.get('id')  # Get 'id' from query parameter
+            if not survey_id:
                 return {'message': 'Survey ID required'}, 400
 
-            survey_response = Survey.query.get(data['id'])
+            survey_response = Survey.query.get(survey_id)
             if not survey_response:
                 return {'message': 'Survey response not found'}, 404
 
@@ -46,19 +46,19 @@ class SurveyAPI:
         @token_required()
         def delete(self):
             """Delete a survey response by ID."""
-            data = request.get_json()
-            if not data or 'id' not in data:
+            survey_id = request.args.get('id')  # Get 'id' from query parameter
+            if not survey_id:
                 return {'message': 'Survey ID required'}, 400
 
-            survey_response = Survey.query.get(data['id'])
+            survey_response = Survey.query.get(survey_id)
             if not survey_response:
                 return {'message': 'Survey response not found'}, 404
 
             try:
                 survey_response.delete()
                 return {'message': 'Survey response deleted successfully'}, 200
-            except Exception as e:
-                return {'message': str(e)}, 500
+            except IntegrityError:
+                return {'message': 'Survey deletion failed due to database error'}, 500
 
     class _ALL(Resource):
         @token_required()

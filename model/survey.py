@@ -1,8 +1,12 @@
+from flask import Flask, request, jsonify
 from sqlalchemy.exc import IntegrityError
 from __init__ import db
+from model.survey import Survey  # Import Survey model
 from model.user import User  # Import User model for foreign key reference
 
-# Survey Model
+app = Flask(__name__)
+
+# Survey Model (Already defined, for reference)
 class Survey(db.Model):
     __tablename__ = 'surveys'  # Plural table name for consistency
 
@@ -43,7 +47,38 @@ class Survey(db.Model):
             db.session.rollback()
             raise IntegrityError("Survey response deletion failed due to a database error.")
 
-# Initialize sample survey responses
+# Initialize your app (you may already have this code elsewhere)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///yourdatabase.db'  # or any other database URI
+db.init_app(app)
+
+# Survey API Endpoint
+@app.route('/api/survey', methods=['POST'])
+def add_survey():
+    """Endpoint to create a new survey response."""
+    try:
+        # Get the data from the incoming request
+        data = request.get_json()
+
+        # Check if required data is provided
+        if 'message' not in data or 'user_id' not in data:
+            return jsonify({"error": "Both 'message' and 'user_id' are required."}), 400
+
+        # Check if user exists
+        user = User.query.get(data['user_id'])
+        if not user:
+            return jsonify({"error": "User not found."}), 404
+
+        # Create new Survey instance and save it
+        new_survey = Survey(message=data['message'], user_id=data['user_id'])
+        new_survey.create()  # Commit to the database
+
+        # Return success response with the newly created survey data
+        return jsonify(new_survey.read()), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Sample function to initialize sample surveys (optional)
 def init_surveys():
     """Initialize some sample survey responses in the database."""
     user = User.query.first()  # Ensure a user exists before creating sample data
@@ -56,3 +91,12 @@ def init_surveys():
             print(f"Error initializing survey data: {e}")
     else:
         print("No users found. Please create a user before initializing surveys.")
+
+# Initialize surveys on app startup (optional)
+@app.before_first_request
+def initialize():
+    init_surveys()
+
+# Run the app
+if __name__ == '__main__':
+    app.run(debug=True, port=8887)
