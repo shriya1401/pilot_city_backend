@@ -95,4 +95,4 @@ def init_surveys():
 
 # Run the app
 if __name__ == '__main__':
-    app.run(debug=True, port=8887)
+    app.run(debug=True, port=8209)

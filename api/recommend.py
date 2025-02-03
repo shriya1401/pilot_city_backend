@@ -39,6 +39,6 @@ def search_py():
 recommend_api = Blueprint('recommend_api', __name__)
 
 if __name__ == '__main__':
-    PORT = 8887
+    PORT = 8209
     app.run(host='0.0.0.0', port=PORT)
     print(f"Server is running at http://localhost:{PORT}")
