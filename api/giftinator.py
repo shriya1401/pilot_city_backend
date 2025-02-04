@@ -34,14 +34,9 @@ model = genai.GenerativeModel(
 # Initialize Flask app
 app = Flask(__name__)
 
-# Apply CORS settings to the app
-CORS(app, supports_credentials=True, resources={
-    "/chat": {
-        "origins": "http://127.0.0.1:4887",  # Exact origin of frontend
-        "methods": ["POST"],  # Allowed HTTP methods
-        "allow_headers": ["Content-Type", "Authorization"],  # Allowed headers
-    }
-})
+CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:4887"}}, supports_credentials=True)
+
+
 
 # Define the chat endpoint
 @app.route('/chat', methods=['POST'])
@@ -60,13 +55,16 @@ def chat():
         return jsonify({"error": str(e)}), 500
 
 # Ensure CORS headers are added to all responses
-@app.after_request
-def apply_cors_headers(response):
-    response.headers["Access-Control-Allow-Origin"] = "http://127.0.0.1:4887"
-    response.headers["Access-Control-Allow-Credentials"] = "true"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-    response.headers["Access-Control-Allow-Methods"] = "POST"
-    return response
+@app.route('/chat', methods=['OPTIONS'])
+def chat_preflight():
+    response = jsonify({'message': 'CORS preflight request success'})
+    response.headers.add("Access-Control-Allow-Origin", "http://127.0.0.1:4887")
+    response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+    response.headers.add("Access-Control-Allow-Credentials", "true")
+    return response, 200
+
+
 
 # Run the app
 if __name__ == "__main__":
