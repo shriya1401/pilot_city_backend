@@ -1,13 +1,12 @@
 import os
 import requests
-from flask import Flask, request, jsonify, Blueprint
-from flask_restful import Api, Resource
+from flask import request, jsonify, Flask
 import google.generativeai as genai
+from flask_cors import CORS
 
-# Configure the Google Generative AI model using an API key
+# Configure AI model
 genai.configure(api_key=os.environ.get('GOOGLE_GENERATIVEAI_API_KEY'))
 
-# Model generation configuration
 generation_config = {
     "temperature": 1.15,
     "top_p": 0.95,
@@ -15,8 +14,6 @@ generation_config = {
     "max_output_tokens": 8192,
     "response_mime_type": "text/plain",
 }
-
-# Initialize the generative AI model
 model = genai.GenerativeModel(
     model_name="gemini-1.5-pro",
     generation_config=generation_config,
@@ -29,73 +26,48 @@ model = genai.GenerativeModel(
         "and interests. Offer practical tips for wrapping, presenting, or adding a personal touch "
         "to the gift. Tailor suggestions to fit a range of scenarios, from simple and inexpensive "
         "to elaborate and luxurious."
+        "Also when giving suggestions, provide some trending product descriptions, prices, "
+        "customer ratings, and where to find the item."
     ),
 )
 
-# Flask app initialization
+# Initialize Flask app
 app = Flask(__name__)
 
-# Blueprint for Post API
-gift_api = Blueprint('gift_api', __name__, url_prefix='/api/gift')
-api = Api(gift_api)
+# Apply CORS settings to the app
+CORS(app, supports_credentials=True, resources={
+    "/chat": {
+        "origins": "http://127.0.0.1:4887",  # Exact origin of frontend
+        "methods": ["POST"],  # Allowed HTTP methods
+        "allow_headers": ["Content-Type", "Authorization"],  # Allowed headers
+    }
+})
 
-# Backend URL placeholder
-BACKEND_URL = "http://localhost:5000"  # Replace with actual backend URL
+# Define the chat endpoint
+@app.route('/chat', methods=['POST'])
+def chat():
+    user_input = request.json.get('user_input', '')
+    if not user_input:
+        return jsonify({"error": "No input provided"}), 400
 
-
-# Fetches chat history from the backend
-def fetch_chat_history():
     try:
-        response = requests.get(f"{BACKEND_URL}/get_chat")
-        response.raise_for_status()
-        return response.json().get("history", [])
+        # Generate chatbot response
+        chat_session = model.start_chat()
+        response = chat_session.send_message(user_input)
+
+        return jsonify({"response": response.text})
     except Exception as e:
-        print(f"Error fetching chat history: {e}")
-        return []
+        return jsonify({"error": str(e)}), 500
 
-
-# Saves a chat entry to the backend
-def save_chat_history(history_entry):
-    try:
-        response = requests.post(f"{BACKEND_URL}/save_chat", json=history_entry)
-        response.raise_for_status()
-        return True
-    except Exception as e:
-        print(f"Error saving chat history: {e}")
-        return False
-
-
-# Define the Chat Resource
-class ChatResource(Resource):
-    def post(self):
-        user_input = request.json.get('user_input', '')
-        if not user_input:
-            return {"error": "No input provided"}, 400
-
-        try:
-            chat_history = fetch_chat_history()
-            chat_session = model.start_chat(history=chat_history)
-            response = chat_session.send_message(user_input)
-            assistant_response = response.text
-
-            user_entry = {"role": "user", "parts": [user_input]}
-            assistant_entry = {"role": "assistant", "parts": [assistant_response]}
-
-            save_chat_history(user_entry)
-            save_chat_history(assistant_entry)
-
-            return {"response": assistant_response}, 200
-        except Exception as e:
-            return {"error": str(e)}, 500
-
-
-# Add ChatResource to the Blueprint's API
-api.add_resource(ChatResource, '/chat')
-
-# Register the Blueprint with the Flask app
-app.register_blueprint(gift_api)
-
+# Ensure CORS headers are added to all responses
+@app.after_request
+def apply_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "http://127.0.0.1:4887"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    response.headers["Access-Control-Allow-Methods"] = "POST"
+    return response
 
 # Run the app
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True, host="127.0.0.1", port=8887)
