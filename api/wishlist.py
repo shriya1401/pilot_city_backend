@@ -93,7 +93,7 @@ def health_check():
     return jsonify({"status": "healthy"}), 200
 
 if __name__ == '__main__':
-    port = int(os.environ.get("FLASK_RUN_PORT", 8209))
+    port = int(os.environ.get("FLASK_RUN_PORT", 8206))
     host = os.environ.get("FLASK_RUN_HOST", "127.0.0.1")
     debug = os.environ.get("FLASK_DEBUG", "True").lower() == "true"
     print(f"Starting server on {host}:{port} (debug={debug})")
