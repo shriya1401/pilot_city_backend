@@ -149,42 +149,33 @@ class Group(db.Model):
         db.session.commit()
         """
         return groups
-            
 def initGroups():
-    """
-    The initGroups function creates the Group table and adds tester data to the table.
-    
-    Uses:
-        The db ORM methods to create the table.
-    
-    Instantiates:
-        Group objects with tester data.
-    
-    Raises:
-        IntegrityError: An error occurred when adding the tester data to the table.
-    """
     with app.app_context():
         """Create database and tables"""
         db.create_all()
-        """Tester data for table"""
         
-        # Home Page Groups
+        """Tester data for table"""
         home_page_section = Section.query.filter_by(_name='Home Page').first()
         groups = [
-            Group(name='General', section_id=home_page_section.id, moderators=[User.query.get(1)]),
-            Group(name='Support', section_id=home_page_section.id, moderators=[User.query.get(1)])
+            Group(name='General', section_id=home_page_section.id),
+            Group(name='Support', section_id=home_page_section.id),
         ]
-        
-        # Holiday Groups 
+
         holiday_section = Section.query.filter_by(_name='Holiday').first()
-        groups += [
-            Group(name='Holiday', section_id=holiday_section.id, moderators=[User.query.get(1)]),
-        ]
+        if holiday_section is None:
+            print("Warning: 'Holiday' section not found. Skipping group creation.")
+        else:
+            groups.append(Group(name='Holiday', section_id=holiday_section.id))
 
         for group in groups:
             try:
-                db.session.add(group)
-                db.session.commit()
+                db.session.add(group)  # Add to session first
+                db.session.commit()    # Commit before modifying relationships
+
+                # Now assign moderators after committing
+                group.moderators.append(User.query.get(1))
+                db.session.commit()    # Commit changes after modifying relationships
+
                 print(f"Record created: {repr(group)}")
             except IntegrityError:
                 db.session.rollback()
