@@ -14,6 +14,7 @@ from flask_cors import CORS
 from flask import Flask
 # import "objects" from "this" project
 from __init__ import app, db, login_manager  # Key Flask objects
+CORS(app, supports_credentials=True)
 # API endpoints
 from api.user import user_api
 from api.pfp import pfp_api
