@@ -1,19 +1,29 @@
 {% extends "layouts/base.html" %}
-{% set project = "Home" %}
+{% set project = "Admin Dashboard" %}
 
 {% block body %}
-    <div class="px-5 py-5 mx-auto" style="background-color: #ffc0cb; height: 100vh;">
-        <h1 class="text-white text-center mb-4"><strong>Holiday Giftinator</strong></h1>
-        
-        <div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
-            <div class="card text-center" style="width: 22rem;">
-                <h5 class="card-title">Purpose</h5>
-                <img class="card-img-top" src="{{ url_for('static', filename='assets/IMG.png') }}" alt="Purpose Image" height="250">
+    <div class="px-5 py-5 mx-auto" style="background-color: #f8f9fa; height: 100vh;">
+        <h1 class="text-dark text-center mb-4"><strong>Admin Dashboard</strong></h1>
+
+        <div class="d-flex justify-content-center align-items-center flex-wrap gap-4" style="height: 70vh;">
+            <!-- User Management Card -->
+            <div class="card text-center shadow-sm" style="width: 22rem;">
+                <h5 class="card-title mt-3">User Management</h5>
+                <!-- Updated image path -->
+                <img class="card-img-top" src="{{ url_for('static', filename='assets/user.png') }}" alt="User Management" height="200">
                 <div class="card-body">
-                    <p class="card-text">
-                        description
-                    </p>
-                    <a href="{{ url_for('purpose') }}" class="btn btn-primary">Go to Purpose</a>
+                    <p class="card-text">Manage users, update roles, and remove inactive accounts.</p>
+                    <a href="https://holiday.stu.nighthawkcodingsociety.com/users/table" class="btn btn-primary">Manage Users</a>
+                </div>
+            </div>
+
+            <!-- Settings Card -->
+            <div class="card text-center shadow-sm" style="width: 22rem;">
+                <h5 class="card-title mt-3">Settings</h5>
+                <img class="card-img-top" src="{{ url_for('static', filename='assets/settings.png') }}" alt="Settings" height="200">
+                <div class="card-body">
+                    <p class="card-text">Configure site settings, API keys, and security options.</p>
+                    <a href="{{ url_for('settings') }}" class="btn btn-primary">Settings</a>
                 </div>
             </div>
         </div>

@@ -112,9 +112,11 @@ def page_not_found(e):
 def index():
     print("Home:", current_user)
     return render_template("index.html")
-@app.route('/purpose')
-def purpose():
-    return render_template('purpose.html')
+
+@app.route('/settings')
+def settings():
+    return render_template('settings.html')
+
 @app.route('/users/table')
 @login_required
 def utable():
