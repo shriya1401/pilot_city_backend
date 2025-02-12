@@ -167,7 +167,7 @@ def generate_data():
     Notification.init_notifications()  # Kushi
     initUserProfile() # Spencer
     Skill.init_skills() # Nora
-    SearchHistory.init_search_history()
+    SearchHistory.init_search_history() #Nora
     init_surveys()  # Soni
 # Backup the old database
 def backup_database(db_uri, backup_uri):
@@ -188,6 +188,8 @@ def extract_data():
         data['groups'] = [group.read() for group in Group.query.all()]
         data['channels'] = [channel.read() for channel in Channel.query.all()]
         data['posts'] = [post.read() for post in Post.query.all()]
+        data['search_history'] = [entry.read() for entry in SearchHistory.query.all()]
+
     return data
 # Save extracted data to JSON files
 def save_data_to_json(data, directory='backup'):
@@ -200,7 +202,7 @@ def save_data_to_json(data, directory='backup'):
 # Load data from JSON files
 def load_data_from_json(directory='backup'):
     data = {}
-    for table in ['users', 'sections', 'groups', 'channels', 'posts']:
+    for table in ['users', 'sections', 'groups', 'channels', 'posts', 'search_history']:
         with open(os.path.join(directory, f'{table}.json'), 'r') as f:
             data[table] = json.load(f)
     return data
@@ -212,6 +214,8 @@ def restore_data(data):
         _ = Group.restore(data['groups'], users)
         _ = Channel.restore(data['channels'])
         _ = Post.restore(data['posts'])
+        _ = SearchHistory.restore(data['search_history'])  # Nora
+
     print("Data restored to the new database.")
 # Define a command to backup data
 @custom_cli.command('backup_data')

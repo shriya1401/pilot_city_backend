@@ -4,7 +4,6 @@ from __init__ import db
 
 
 # SearchHistory Model
-# SearchHistory Model
 class SearchHistory(db.Model):
     __tablename__ = 'search_history'
 
@@ -45,17 +44,38 @@ class SearchHistory(db.Model):
             return None
         return self
 
-    def read(self):
+    def update(self, data):
         """
-        Converts a SearchHistory object to a dictionary for JSON serialization.
+        Updates the SearchHistory object with new data and commits the transaction.
+        Args:
+            data (dict): A dictionary containing updated values for the object.
         """
-        return {
-            "id": self.id,
-            "user": self.user,
-            "name": self.name,
-            "query": self.query,
-            "tags": self.tags,
-        }
+        for key, value in data.items():
+            if hasattr(self, key) and key != 'id':
+                setattr(self, key, value)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+
+    @staticmethod
+    def restore(data):
+        """
+        Restores data to the SearchHistory table from a list of entries.
+        Args:
+            data (list): A list of dictionaries with search history entries.
+        """
+        searches = {}
+        for entry_data in data:
+            _ = entry_data.pop('id', None)  # Remove 'id' from entry_data and store it in user_id
+            uid = entry_data.get("uid", None)
+            user = SearchHistory.query.filter_by(_uid=uid).first()
+            if user:
+                user.update(entry_data)
+            else:
+                user = SearchHistory(**entry_data)
+                user.create()
+        return searches
 
     @staticmethod
     def init_search_history():
