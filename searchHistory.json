@@ -162,5 +162,29 @@
             "set": 1,
             "toys": 1
         }
+    },
+    {
+        "id": 1,
+        "user": "nora",
+        "name": "Lego Set",
+        "query": null,
+        "tags": {
+            "all": 2,
+            "lego": 1,
+            "set": 1,
+            "toys": 1
+        }
+    },
+    {
+        "id": 2,
+        "user": "nora",
+        "name": "Lego Set",
+        "query": null,
+        "tags": {
+            "all": 2,
+            "lego": 1,
+            "set": 1,
+            "toys": 1
+        }
     }
 ]
