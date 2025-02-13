@@ -31,7 +31,7 @@ search_api = Blueprint("search_api", __name__, url_prefix="/api/search")
 
 # Items data
 items = [
-       {"name": "Teddy Bear", "link": "/holiday/toys", "tags": {"all": 1, "teddy": 0, "bear": 0, "toys": 0}},
+       {"name": "Teddy Bear", "link": "/holiday_frontend/holiday/toys", "tags": {"all": 1, "teddy": 0, "bear": 0, "toys": 0}},
        {"name": "Lego Set", "link": "holiday/searchbar/holiday/toys", "tags": {"all": 1, "lego": 0, "set": 0, "toys": 0}},
        {"name": "Remote Control Car", "link": "holiday/searchbar/holiday/toys", "tags": {"all": 1, "remote": 0, "control": 0, "car": 0, "toys": 0}},
        {"name": "Holiday Candles", "link": "holiday/searchbar/holiday/home-decor", "tags": {"all": 1, "holiday": 0, "candles": 0, "home-decor": 0}},
