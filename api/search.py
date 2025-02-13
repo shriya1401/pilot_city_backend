@@ -32,23 +32,23 @@ search_api = Blueprint("search_api", __name__, url_prefix="/api/search")
 # Items data
 items = [
        {"name": "Teddy Bear", "link": "/holiday_frontend/holiday/toys", "tags": {"all": 1, "teddy": 0, "bear": 0, "toys": 0}},
-       {"name": "Lego Set", "link": "holiday/searchbar/holiday/toys", "tags": {"all": 1, "lego": 0, "set": 0, "toys": 0}},
-       {"name": "Remote Control Car", "link": "holiday/searchbar/holiday/toys", "tags": {"all": 1, "remote": 0, "control": 0, "car": 0, "toys": 0}},
-       {"name": "Holiday Candles", "link": "holiday/searchbar/holiday/home-decor", "tags": {"all": 1, "holiday": 0, "candles": 0, "home-decor": 0}},
-       {"name": "Festive Wreath", "link": "holiday/searchbar/holiday/home-decor", "tags": {"all": 1, "festive": 0, "wreath": 0, "home-decor": 0}},
-       {"name": "Decorative Ornaments", "link": "holiday/searchbar/holiday/home-decor", "tags": {"all": 1, "decorative": 0, "ornaments": 0, "home-decor": 0}},
-       {"name": "Wireless Headphones", "link": "holiday/searchbar/holiday/electronics", "tags": {"all": 1, "wireless": 0, "headphones": 0, "electronics": 0}},
-       {"name": "Smartwatch", "link": "holiday/searchbar/holiday/electronics", "tags": {"all": 1, "smartwatch": 0, "electronics": 0}},
-       {"name": "Gaming Console", "link": "holiday/searchbar/holiday/electronics", "tags": {"all": 1, "gaming": 0, "console": 0, "electronics": 0}},
-       {"name": "Cozy Holiday Sweater", "link": "holiday/searchbar/holiday/clothes", "tags": {"all": 1, "cozy": 0, "holiday": 0, "sweater": 0, "clothes": 0}},
-       {"name": "Woolen Scarf", "link": "holiday/searchbar/holiday/clothes", "tags": {"all": 1, "woolen": 0, "scarf": 0, "clothes": 0}},
-       {"name": "Winter Gloves", "link": "holiday/searchbar/holiday/clothes", "tags": {"all": 1, "winter": 0, "gloves": 0, "clothes": 0}},
-       {"name": "Holiday Cookies", "link": "holiday/searchbar/holiday/food", "tags": {"all": 1, "holiday": 0, "cookies": 0, "food": 0}},
-       {"name": "Chocolate Gift Box", "link": "holiday/searchbar/holiday/food", "tags": {"all": 1, "chocolate": 0, "gift": 0, "box": 0, "food": 0}},
-       {"name": "Gourmet Cheese Set", "link": "holiday/searchbar/holiday/food", "tags": {"all": 1, "gourmet": 0, "cheese": 0, "set": 0, "food": 0}},
-       {"name": "Scented Candle", "link": "holiday/searchbar/holiday/scented", "tags": {"all": 1, "candle": 0, "scented": 0}},
-       {"name": "Aromatic Diffuser", "link": "holiday/searchbar/holiday/scented", "tags": {"all": 1, "aromatic": 0, "diffuser": 0, "scented": 0}},
-       {"name": "Perfume Gift Set", "link": "holiday/searchbar/holiday/scented", "tags": {"all": 1, "perfume": 0, "gift": 0, "set": 0, "scented": 0}}
+       {"name": "Lego Set", "link": "/holiday_frontend/holiday/toys", "tags": {"all": 1, "lego": 0, "set": 0, "toys": 0}},
+       {"name": "Remote Control Car", "link": "/holiday_frontend/holiday/toys", "tags": {"all": 1, "remote": 0, "control": 0, "car": 0, "toys": 0}},
+       {"name": "Holiday Candles", "link": "/holiday_frontend/holiday/home-decor", "tags": {"all": 1, "holiday": 0, "candles": 0, "home-decor": 0}},
+       {"name": "Festive Wreath", "link": "/holiday_frontend/holiday/home-decor", "tags": {"all": 1, "festive": 0, "wreath": 0, "home-decor": 0}},
+       {"name": "Decorative Ornaments", "link": "/holiday_frontend/holiday/home-decor", "tags": {"all": 1, "decorative": 0, "ornaments": 0, "home-decor": 0}},
+       {"name": "Wireless Headphones", "link": "/holiday_frontend/holiday/electronics", "tags": {"all": 1, "wireless": 0, "headphones": 0, "electronics": 0}},
+       {"name": "Smartwatch", "link": "/holiday_frontend/holiday/electronics", "tags": {"all": 1, "smartwatch": 0, "electronics": 0}},
+       {"name": "Gaming Console", "link": "/holiday_frontend/holiday/electronics", "tags": {"all": 1, "gaming": 0, "console": 0, "electronics": 0}},
+       {"name": "Cozy Holiday Sweater", "link": "/holiday_frontend/holiday/clothes", "tags": {"all": 1, "cozy": 0, "holiday": 0, "sweater": 0, "clothes": 0}},
+       {"name": "Woolen Scarf", "link": "/holiday_frontend/holiday/clothes", "tags": {"all": 1, "woolen": 0, "scarf": 0, "clothes": 0}},
+       {"name": "Winter Gloves", "link": "/holiday_frontend/holiday/clothes", "tags": {"all": 1, "winter": 0, "gloves": 0, "clothes": 0}},
+       {"name": "Holiday Cookies", "link": "/holiday_frontend/holiday/food", "tags": {"all": 1, "holiday": 0, "cookies": 0, "food": 0}},
+       {"name": "Chocolate Gift Box", "link": "/holiday_frontend/holiday/food", "tags": {"all": 1, "chocolate": 0, "gift": 0, "box": 0, "food": 0}},
+       {"name": "Gourmet Cheese Set", "link": "/holiday_frontend/holiday/food", "tags": {"all": 1, "gourmet": 0, "cheese": 0, "set": 0, "food": 0}},
+       {"name": "Scented Candle", "link": "/holiday_frontend/holiday/scented", "tags": {"all": 1, "candle": 0, "scented": 0}},
+       {"name": "Aromatic Diffuser", "link": "/holiday_frontend/holiday/scented", "tags": {"all": 1, "aromatic": 0, "diffuser": 0, "scented": 0}},
+       {"name": "Perfume Gift Set", "link": "/holiday_frontend/holiday/scented", "tags": {"all": 1, "perfume": 0, "gift": 0, "set": 0, "scented": 0}}
 ]
 
 # Path to JSON file for backups
