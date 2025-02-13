@@ -19,36 +19,60 @@ class SurveyAPI:
             if not data or 'message' not in data:
                 return {'message': 'Survey message is required'}, 400
 
+            # Create a new Survey response
             survey_response = Survey(
                 message=data['message'],
                 user_id=current_user.id
             )
 
             try:
+                # Save to database
                 survey_response.create()
-                # Directly return the dictionary from `read()`
-                return survey_response.read(), 201
+                return survey_response.read(), 201  # Return the created survey
             except IntegrityError:
                 return {'message': 'Survey creation failed due to database error'}, 500
 
         @token_required()
         def get(self):
             """Retrieve a survey response by ID."""
-            survey_id = request.args.get('id')  # Get 'id' from query parameter
+            survey_id = request.args.get('id')  # Get ID from query params
             if not survey_id:
                 return {'message': 'Survey ID required'}, 400
+
+            # Retrieve survey by ID
+            survey_response = Survey.query.get(survey_id)
+            if not survey_response:
+                return {'message': 'Survey response not found'}, 404
+
+            return survey_response.read()
+
+        @token_required()
+        def put(self):
+            """Update an existing survey response."""
+            survey_id = request.args.get('id')
+            data = request.get_json()
+
+            if not survey_id:
+                return {'message': 'Survey ID required'}, 400
+            if not data or 'message' not in data:
+                return {'message': 'Updated message is required'}, 400
 
             survey_response = Survey.query.get(survey_id)
             if not survey_response:
                 return {'message': 'Survey response not found'}, 404
 
-            # Directly return the dictionary from `read()`
-            return survey_response.read()
+            try:
+                # Update the survey response message
+                survey_response.message = data['message']
+                survey_response.update()
+                return {'message': 'Survey response updated successfully', 'data': survey_response.read()}, 200
+            except IntegrityError:
+                return {'message': 'Survey update failed due to database error'}, 500
 
         @token_required()
         def delete(self):
             """Delete a survey response by ID."""
-            survey_id = request.args.get('id')  # Get 'id' from query parameter
+            survey_id = request.args.get('id')
             if not survey_id:
                 return {'message': 'Survey ID required'}, 400
 
@@ -57,6 +81,7 @@ class SurveyAPI:
                 return {'message': 'Survey response not found'}, 404
 
             try:
+                # Delete the survey
                 survey_response.delete()
                 return {'message': 'Survey response deleted successfully'}, 200
             except IntegrityError:
@@ -67,7 +92,10 @@ class SurveyAPI:
         def get(self):
             """Retrieve all survey responses."""
             surveys = Survey.query.all()
-            # Directly return a list of dictionaries from `read()`
+            if not surveys:
+                return {'message': 'No surveys found'}, 404
+
+            # Return a list of survey responses
             return [survey.read() for survey in surveys]
 
     class _BY_USER(Resource):
@@ -77,7 +105,8 @@ class SurveyAPI:
             surveys = Survey.query.filter_by(user_id=user_id).all()
             if not surveys:
                 return {'message': 'No survey responses found for this user'}, 404
-            # Directly return a list of dictionaries from `read()`
+
+            # Return a list of survey responses by user
             return [survey.read() for survey in surveys]
 
 # Map API endpoints
