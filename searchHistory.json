@@ -186,5 +186,30 @@
             "set": 1,
             "toys": 1
         }
+    },
+    {
+        "id": 1,
+        "user": "nora",
+        "name": "Teddy Bear",
+        "query": null,
+        "tags": {
+            "all": 2,
+            "teddy": 1,
+            "bear": 1,
+            "toys": 1
+        }
+    },
+    {
+        "id": 2,
+        "user": "nora",
+        "name": "Gourmet Cheese Set",
+        "query": null,
+        "tags": {
+            "all": 2,
+            "gourmet": 1,
+            "cheese": 1,
+            "set": 1,
+            "food": 1
+        }
     }
 ]
